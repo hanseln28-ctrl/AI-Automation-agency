@@ -242,7 +242,7 @@ export const MOCK_PLATFORM_DETAILS: PlatformDetail[] = [
     followers: 450000,
     views: 1240000,
     engagement: 98000,
-    topClip: MOCK_TOP_CLIPS[0],
+    topClip: MOCK_TOP_CLIPS[0]!,
   },
   {
     platform: 'youtube',
@@ -252,7 +252,7 @@ export const MOCK_PLATFORM_DETAILS: PlatformDetail[] = [
     followers: 320000,
     views: 890000,
     engagement: 72000,
-    topClip: MOCK_TOP_CLIPS[1],
+    topClip: MOCK_TOP_CLIPS[1]!,
   },
   {
     platform: 'instagram',
@@ -262,7 +262,7 @@ export const MOCK_PLATFORM_DETAILS: PlatformDetail[] = [
     followers: 210000,
     views: 320000,
     engagement: 45000,
-    topClip: MOCK_TOP_CLIPS[2],
+    topClip: MOCK_TOP_CLIPS[2]!,
   },
   {
     platform: 'twitch',
@@ -272,7 +272,7 @@ export const MOCK_PLATFORM_DETAILS: PlatformDetail[] = [
     followers: 180000,
     views: 280000,
     engagement: 38000,
-    topClip: MOCK_TOP_CLIPS[3],
+    topClip: MOCK_TOP_CLIPS[3]!,
   },
   {
     platform: 'kick',
@@ -282,6 +282,6 @@ export const MOCK_PLATFORM_DETAILS: PlatformDetail[] = [
     followers: 65000,
     views: 117000,
     engagement: 14200,
-    topClip: MOCK_TOP_CLIPS[4],
+    topClip: MOCK_TOP_CLIPS[4]!,
   },
 ];
