@@ -17,3 +17,7 @@ export type {
   PlatformConnection,
   ProcessingStage,
 } from './types';
+export { PLATFORM_CONFIG, STATUS_CONFIG } from './types';
+
+// Mock data helpers
+export { MOCK_STREAMS, MOCK_PLATFORM_CONNECTIONS, getStreamById } from './mock-data';
