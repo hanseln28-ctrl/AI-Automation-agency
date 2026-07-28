@@ -1,0 +1,131 @@
+import type { MockStream, PlatformConnection } from './types';
+
+export const MOCK_STREAMS: MockStream[] = [
+  {
+    id: 'str-001',
+    title: 'Late Night Valorant Ranked Grind',
+    platform: 'twitch',
+    duration: '4h 12m',
+    importDate: '2026-07-21',
+    status: 'completed',
+    progress: 100,
+    thumbnailGradient: 'from-[#9146FF] via-[#6C5CE7] to-[#0A0A0F]',
+    views: 12453,
+    peakViewers: 3421,
+    chatMessages: 8923,
+    aiSummary:
+      'High-energy Valorant ranked session featuring clutch plays on Ascent and a 7-game win streak. Strong audience engagement with 3,421 peak viewers. Multiple viral-worthy reactions during overtime rounds.',
+  },
+  {
+    id: 'str-002',
+    title: 'Just Chatting — Reacting to Your Clips!',
+    platform: 'kick',
+    duration: '2h 48m',
+    importDate: '2026-07-20',
+    status: 'completed',
+    progress: 100,
+    thumbnailGradient: 'from-[#53FC18] via-[#3AAD12] to-[#0A0A0F]',
+    views: 8901,
+    peakViewers: 2100,
+    chatMessages: 12450,
+    aiSummary:
+      'Community clip review stream with high chat interaction. Several emotional reaction moments detected. Peak engagement during fan-submitted montage segment.',
+  },
+  {
+    id: 'str-003',
+    title: 'Elden Ring DLC — First Playthrough',
+    platform: 'youtube',
+    duration: '3h 55m',
+    importDate: '2026-07-19',
+    status: 'generating_clips',
+    progress: 78,
+    thumbnailGradient: 'from-[#FF0000] via-[#CC0000] to-[#0A0A0F]',
+  },
+  {
+    id: 'str-004',
+    title: 'Morning Coffee & Code Stream',
+    platform: 'twitch',
+    duration: '1h 30m',
+    importDate: '2026-07-19',
+    status: 'analyzing',
+    progress: 55,
+    thumbnailGradient: 'from-[#9146FF] via-[#5A4BD6] to-[#0A0A0F]',
+  },
+  {
+    id: 'str-005',
+    title: 'TikTok LIVE — Behind the Scenes at TwitchCon',
+    platform: 'tiktok',
+    duration: '45m',
+    importDate: '2026-07-18',
+    status: 'completed',
+    progress: 100,
+    thumbnailGradient: 'from-[#333333] via-[#1A1A1A] to-[#0A0A0F]',
+    views: 6700,
+    peakViewers: 890,
+    chatMessages: 3400,
+    aiSummary:
+      'Behind-the-scenes coverage from TwitchCon 2026. Multiple creator meetup moments and booth walkthroughs. Short-form potential is high.',
+  },
+  {
+    id: 'str-006',
+    title: 'Apex Legends Ranked Push to Masters',
+    platform: 'twitch',
+    duration: '5h 20m',
+    importDate: '2026-07-17',
+    status: 'transcribing',
+    progress: 35,
+    thumbnailGradient: 'from-[#9146FF] via-[#7B6CF6] to-[#0A0A0F]',
+  },
+  {
+    id: 'str-007',
+    title: 'Podcast — The Future of Creator Economy',
+    platform: 'upload',
+    duration: '1h 15m',
+    importDate: '2026-07-16',
+    status: 'completed',
+    progress: 100,
+    thumbnailGradient: 'from-[#6B7280] via-[#4B5563] to-[#0A0A0F]',
+    views: 3200,
+    peakViewers: 0,
+    chatMessages: 0,
+    aiSummary:
+      'Uploaded podcast episode discussing creator monetization trends. Insightful interview with guest speaker covering sponsorship strategies and platform diversification.',
+  },
+  {
+    id: 'str-008',
+    title: 'Minecraft Hardcore — Day 47',
+    platform: 'youtube',
+    duration: '2h 10m',
+    importDate: '2026-07-15',
+    status: 'failed',
+    progress: 42,
+    thumbnailGradient: 'from-[#FF0000] via-[#990000] to-[#0A0A0F]',
+  },
+  {
+    id: 'str-009',
+    title: 'IRL — New Studio Tour!',
+    platform: 'kick',
+    duration: '1h 05m',
+    importDate: '2026-07-14',
+    status: 'importing',
+    progress: 12,
+    thumbnailGradient: 'from-[#53FC18] via-[#2E8A0E] to-[#0A0A0F]',
+  },
+];
+
+export const MOCK_PLATFORM_CONNECTIONS: PlatformConnection[] = [
+  {
+    platform: 'twitch',
+    connected: true,
+    accountName: 'IRONStreamer',
+    accountAvatar: '',
+    handle: '@ironstreamer',
+  },
+  { platform: 'kick', connected: false },
+  { platform: 'youtube', connected: false },
+  { platform: 'tiktok', connected: false },
+];
+
+export function getStreamById(id: string): MockStream | undefined {
+  return MOCK_STREAMS.find((s) => s.id === id);
+}

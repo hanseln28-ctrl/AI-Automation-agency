@@ -1,0 +1,636 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// =============================================================================
+// Core Identity
+// =============================================================================
+
+enum Tier {
+  free
+  starter
+  pro
+  agency
+  enterprise
+}
+
+model User {
+  id                 String    @id @default(uuid()) @db.Uuid
+  clerkId            String    @unique @map("clerk_id")
+  email              String?
+  displayName        String?   @map("display_name")
+  avatarUrl          String?   @map("avatar_url")
+  tier               Tier      @default(free)
+  clipsUsedThisMonth Int       @default(0) @map("clips_used_this_month")
+  clipsLimit         Int       @default(5) @map("clips_limit")
+  timezone           String    @default("UTC")
+  preferences        Json      @default("{}")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+  deletedAt          DateTime? @map("deleted_at")
+
+  streams           Stream[]
+  clips             Clip[]
+  socialAccounts    SocialAccount[]
+  subscriptions     Subscription[]
+  apiKeys           ApiKey[]
+  communityMessages CommunityMessage[]
+  revenueSources    RevenueSource[]
+  aiUsage           AiUsage[]
+  teamMemberships   TeamMember[]
+
+  @@map("users")
+}
+
+model Team {
+  id               String   @id @default(uuid()) @db.Uuid
+  name             String
+  slug             String   @unique
+  logoUrl          String?  @map("logo_url")
+  ownerUserId      String   @map("owner_user_id") @db.Uuid
+  stripeCustomerId String?  @map("stripe_customer_id")
+  tier             Tier     @default(agency)
+  totalClipsLimit  Int      @default(500) @map("total_clips_limit")
+  settings         Json     @default("{}")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  deletedAt        DateTime? @map("deleted_at")
+
+  owner       User          @relation(fields: [ownerUserId], references: [id])
+  members     TeamMember[]
+  streams     Stream[]
+  clips       Clip[]
+  socialAccounts SocialAccount[]
+  subscriptions  Subscription[]
+  apiKeys     ApiKey[]
+  campaigns   Campaign[]
+  revenueSources RevenueSource[]
+
+  @@index([ownerUserId])
+  @@map("teams")
+}
+
+model TeamMember {
+  id          String   @id @default(uuid()) @db.Uuid
+  teamId      String   @map("team_id") @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  role        String   @default("member")
+  permissions Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@index([teamId])
+  @@index([userId])
+  @@map("team_members")
+}
+
+// =============================================================================
+// Social Platform Accounts
+// =============================================================================
+
+model SocialAccount {
+  id                    String    @id @default(uuid()) @db.Uuid
+  userId                String    @map("user_id") @db.Uuid
+  teamId                String?   @map("team_id") @db.Uuid
+  platform              String
+  platformUserId        String    @map("platform_user_id")
+  platformUsername      String    @map("platform_username")
+  displayName           String?   @map("display_name")
+  avatarUrl             String?   @map("avatar_url")
+  accessTokenEncrypted  Bytes     @map("access_token_encrypted")
+  refreshTokenEncrypted Bytes?    @map("refresh_token_encrypted")
+  tokenExpiresAt        DateTime? @map("token_expires_at")
+  scopes                String[]  @default([])
+  isConnected           Boolean   @default(true) @map("is_connected")
+  lastSyncedAt          DateTime? @map("last_synced_at")
+  errorMessage          String?   @map("error_message")
+  platformMetadata      Json      @default("{}") @map("platform_metadata")
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team           Team?            @relation(fields: [teamId], references: [id])
+  scheduledPosts ScheduledPost[]
+
+  @@unique([userId, platform, platformUserId])
+  @@index([userId])
+  @@index([platform, platformUserId])
+  @@map("social_accounts")
+}
+
+// =============================================================================
+// Streams
+// =============================================================================
+
+model Stream {
+  id               String    @id @default(uuid()) @db.Uuid
+  userId           String    @map("user_id") @db.Uuid
+  teamId           String?   @map("team_id") @db.Uuid
+  source           String
+  sourceUrl        String?   @map("source_url")
+  sourceId         String?   @map("source_id")
+  title            String?
+  gameOrCategory   String?   @map("game_or_category")
+  durationSeconds  Int?      @map("duration_seconds")
+  resolution       String?
+  fps              Int?
+  fileSizeBytes    BigInt?   @map("file_size_bytes")
+  status           String    @default("importing")
+  progressPct      Int?      @default(0) @map("progress_pct")
+  errorMessage     String?   @map("error_message")
+  rawVodUrl        String?   @map("raw_vod_url")
+  thumbnailUrl     String?   @map("thumbnail_url")
+  chatLogUrl       String?   @map("chat_log_url")
+  transcriptJson   Json?     @map("transcript_json")
+  momentsJson      Json?     @map("moments_json")
+  aiMetadata       Json      @default("{}") @map("ai_metadata")
+  clipCount        Int       @default(0) @map("clip_count")
+  totalViews       BigInt    @default(0) @map("total_views")
+  jobId            String?   @map("job_id")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  startedAt        DateTime? @map("started_at")
+  completedAt      DateTime? @map("completed_at")
+  deletedAt        DateTime? @map("deleted_at")
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team  Team? @relation(fields: [teamId], references: [id])
+  clips Clip[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([userId, status])
+  @@index([createdAt(sort: Desc)])
+  @@map("streams")
+}
+
+// =============================================================================
+// Clips
+// =============================================================================
+
+model Clip {
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  teamId          String?   @map("team_id") @db.Uuid
+  streamId        String    @map("stream_id") @db.Uuid
+  title           String?
+  description     String?
+  startOffset     Int       @map("start_offset")
+  endOffset       Int       @map("end_offset")
+  status          String    @default("queued")
+  videoUrl        String?   @map("video_url")
+  thumbnailUrl    String?   @map("thumbnail_url")
+  gifPreviewUrl   String?   @map("gif_preview_url")
+  category        String?
+  tags            String[]  @default([])
+  aiScore         Float?    @map("ai_score")
+  aiMetadata      Json      @default("{}") @map("ai_metadata")
+  publishCount    Int       @default(0) @map("publish_count")
+  totalViews      BigInt    @default(0) @map("total_views")
+  totalLikes      BigInt    @default(0) @map("total_likes")
+  totalComments   BigInt    @default(0) @map("total_comments")
+  totalShares     BigInt    @default(0) @map("total_shares")
+  engagementRate  Float     @default(0.0) @map("engagement_rate")
+  jobId           String?   @map("job_id")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  deletedAt       DateTime? @map("deleted_at")
+
+  user     User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team     Team? @relation(fields: [teamId], references: [id])
+  stream   Stream @relation(fields: [streamId], references: [id], onDelete: Cascade)
+
+  captions         Caption[]
+  hooks            ClipHook[]
+  thumbnails       ClipThumbnail[]
+  scheduledPosts   ScheduledPost[]
+  analyticsEvents  AnalyticsEvent[]
+  dailyRollups     AnalyticsDailyRollup[]
+  sponsorships     Sponsorship[]
+  revenueSources   RevenueSource[]
+  aiUsage          AiUsage[]
+
+  @@index([userId])
+  @@index([streamId])
+  @@index([status])
+  @@index([userId, status])
+  @@index([createdAt(sort: Desc)])
+  @@index([category])
+  @@map("clips")
+}
+
+model Caption {
+  id           String   @id @default(uuid()) @db.Uuid
+  clipId       String   @map("clip_id") @db.Uuid
+  language     String   @default("en")
+  format       String   @default("srt")
+  style        String   @default("kinetic")
+  captionUrl   String?  @map("caption_url")
+  content      String?
+  isBurnedIn   Boolean  @default(false) @map("is_burned_in")
+  burnedVideoUrl String? @map("burned_video_url")
+  wordCount    Int?     @map("word_count")
+  aiModel      String?  @map("ai_model")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  clip Clip @relation(fields: [clipId], references: [id], onDelete: Cascade)
+
+  @@unique([clipId, language, format, style])
+  @@index([clipId])
+  @@map("captions")
+}
+
+model ClipHook {
+  id                   String   @id @default(uuid()) @db.Uuid
+  clipId               String   @map("clip_id") @db.Uuid
+  hookText             String   @map("hook_text")
+  hookType             String   @map("hook_type")
+  platformOptimizedFor String?  @map("platform_optimized_for")
+  timesUsed            Int      @default(0) @map("times_used")
+  avgEngagement        Float?   @map("avg_engagement")
+  aiScore              Float?   @map("ai_score")
+  aiModel              String?  @map("ai_model")
+  createdAt            DateTime @default(now()) @map("created_at")
+
+  clip Clip @relation(fields: [clipId], references: [id], onDelete: Cascade)
+
+  @@index([clipId])
+  @@index([clipId, hookType])
+  @@map("clip_hooks")
+}
+
+model ClipThumbnail {
+  id              String   @id @default(uuid()) @db.Uuid
+  clipId          String   @map("clip_id") @db.Uuid
+  imageUrl        String   @map("image_url")
+  timestampOffset Int?     @map("timestamp_offset")
+  isAiSelected    Boolean  @default(false) @map("is_ai_selected")
+  isCustom        Boolean  @default(false) @map("is_custom")
+  aiScore         Float?   @map("ai_score")
+  aiDescription   String?  @map("ai_description")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  clip Clip @relation(fields: [clipId], references: [id], onDelete: Cascade)
+
+  @@index([clipId])
+  @@map("clip_thumbnails")
+}
+
+// =============================================================================
+// Publishing
+// =============================================================================
+
+model ScheduledPost {
+  id               String    @id @default(uuid()) @db.Uuid
+  clipId           String    @map("clip_id") @db.Uuid
+  userId           String    @map("user_id") @db.Uuid
+  socialAccountId  String    @map("social_account_id") @db.Uuid
+  platform         String
+  title            String
+  description      String?
+  hookId           String?   @map("hook_id") @db.Uuid
+  tags             String[]  @default([])
+  thumbnailUrl     String?   @map("thumbnail_url")
+  status           String    @default("queued")
+  scheduledFor     DateTime? @map("scheduled_for")
+  publishedAt      DateTime? @map("published_at")
+  platformPostId   String?   @map("platform_post_id")
+  platformPostUrl  String?   @map("platform_post_url")
+  errorMessage     String?   @map("error_message")
+  views            BigInt    @default(0)
+  likes            BigInt    @default(0)
+  comments         BigInt    @default(0)
+  shares           BigInt    @default(0)
+  statsUpdatedAt   DateTime? @map("stats_updated_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  clip          Clip          @relation(fields: [clipId], references: [id], onDelete: Cascade)
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  socialAccount SocialAccount @relation(fields: [socialAccountId], references: [id], onDelete: Cascade)
+  analyticsEvents AnalyticsEvent[]
+
+  @@index([userId])
+  @@index([clipId])
+  @@index([status, scheduledFor])
+  @@index([platformPostId])
+  @@map("scheduled_posts")
+}
+
+// =============================================================================
+// Analytics
+// =============================================================================
+
+model AnalyticsEvent {
+  id          String   @id @default(uuid()) @db.Uuid
+  clipId      String   @map("clip_id") @db.Uuid
+  postId      String?  @map("post_id") @db.Uuid
+  platform    String
+  eventType   String   @map("event_type")
+  eventValue  Float    @default(1.0) @map("event_value")
+  source      String?
+  country     String?
+  deviceType  String?  @map("device_type")
+  eventDate   DateTime @map("event_date") @db.Date
+  eventHour   Int?     @map("event_hour")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  clip Clip          @relation(fields: [clipId], references: [id], onDelete: Cascade)
+  post ScheduledPost? @relation(fields: [postId], references: [id])
+
+  @@index([clipId, eventType, eventDate])
+  @@index([eventDate])
+  @@index([clipId, eventDate])
+  @@map("analytics_events")
+}
+
+model AnalyticsDailyRollup {
+  id                String   @id @default(uuid()) @db.Uuid
+  clipId            String   @map("clip_id") @db.Uuid
+  userId            String   @map("user_id") @db.Uuid
+  platform          String
+  date              DateTime @db.Date
+  views             BigInt   @default(0)
+  likes             BigInt   @default(0)
+  comments          BigInt   @default(0)
+  shares            BigInt   @default(0)
+  saves             BigInt   @default(0)
+  totalWatchSeconds BigInt   @default(0) @map("total_watch_seconds")
+  impressions       BigInt   @default(0)
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  clip Clip @relation(fields: [clipId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([clipId, platform, date])
+  @@index([userId, date])
+  @@index([clipId, date])
+  @@map("analytics_daily_rollups")
+}
+
+// =============================================================================
+// Sponsorships
+// =============================================================================
+
+model Campaign {
+  id                String    @id @default(uuid()) @db.Uuid
+  userId            String    @map("user_id") @db.Uuid
+  teamId            String?   @map("team_id") @db.Uuid
+  name              String
+  brandName         String    @map("brand_name")
+  brandLogoUrl      String?   @map("brand_logo_url")
+  budgetCents       BigInt    @default(0) @map("budget_cents")
+  costPerClipCents  BigInt?   @map("cost_per_clip_cents")
+  costPerViewCents  BigInt?   @map("cost_per_view_cents")
+  status            String    @default("draft")
+  startsAt          DateTime? @map("starts_at")
+  endsAt            DateTime? @map("ends_at")
+  requiredClips     Int?      @map("required_clips")
+  requiredViews     BigInt?   @map("required_views")
+  requiredPlatforms String[]  @map("required_platforms")
+  clipsUsed         Int       @default(0) @map("clips_used")
+  totalViews        BigInt    @default(0) @map("total_views")
+  totalSpendCents   BigInt    @default(0) @map("total_spend_cents")
+  brief             String?
+  guidelines        String?
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+  deletedAt         DateTime? @map("deleted_at")
+
+  user         User          @relation(fields: [userId], references: [id])
+  team         Team?         @relation(fields: [teamId], references: [id])
+  sponsorships Sponsorship[]
+  revenueSources RevenueSource[]
+
+  @@index([userId])
+  @@index([status])
+  @@map("campaigns")
+}
+
+model Sponsorship {
+  id               String   @id @default(uuid()) @db.Uuid
+  campaignId       String   @map("campaign_id") @db.Uuid
+  clipId           String   @map("clip_id") @db.Uuid
+  customRateCents  BigInt?  @map("custom_rate_cents")
+  viewsAttributed  BigInt   @default(0) @map("views_attributed")
+  revenueCents     BigInt   @default(0) @map("revenue_cents")
+  placement        String   @default("pre_roll")
+  durationSeconds  Int?     @map("duration_seconds")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  clip     Clip     @relation(fields: [clipId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, clipId])
+  @@index([campaignId])
+  @@index([clipId])
+  @@map("sponsorships")
+}
+
+// =============================================================================
+// Revenue
+// =============================================================================
+
+model RevenueSource {
+  id           String    @id @default(uuid()) @db.Uuid
+  userId       String    @map("user_id") @db.Uuid
+  teamId       String?   @map("team_id") @db.Uuid
+  sourceType   String    @map("source_type")
+  sourceName   String    @map("source_name")
+  amountCents  BigInt    @map("amount_cents")
+  currency     String    @default("USD")
+  campaignId   String?   @map("campaign_id") @db.Uuid
+  clipId       String?   @map("clip_id") @db.Uuid
+  postId       String?   @map("post_id") @db.Uuid
+  earnedAt     DateTime  @map("earned_at") @db.Date
+  notes        String?
+  receiptUrl   String?   @map("receipt_url")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  user     User      @relation(fields: [userId], references: [id])
+  team     Team?     @relation(fields: [teamId], references: [id])
+  campaign Campaign? @relation(fields: [campaignId], references: [id])
+  clip     Clip?     @relation(fields: [clipId], references: [id])
+  post     ScheduledPost? @relation(fields: [postId], references: [id])
+
+  @@index([userId])
+  @@index([userId, earnedAt])
+  @@index([userId, sourceType])
+  @@map("revenue_sources")
+}
+
+// =============================================================================
+// Community
+// =============================================================================
+
+model CommunityMessage {
+  id                String    @id @default(uuid()) @db.Uuid
+  userId            String    @map("user_id") @db.Uuid
+  socialAccountId   String?   @map("social_account_id") @db.Uuid
+  source            String
+  sourceMessageId   String?   @map("source_message_id")
+  senderUsername    String    @map("sender_username")
+  senderAvatarUrl   String?   @map("sender_avatar_url")
+  senderPlatformId  String?   @map("sender_platform_id")
+  messageText       String    @map("message_text")
+  isReply           Boolean   @default(false) @map("is_reply")
+  parentMessageId   String?   @map("parent_message_id") @db.Uuid
+  sentiment         String?
+  sentimentScore    Float?    @map("sentiment_score")
+  intent            String?
+  suggestedReply    String?   @map("suggested_reply")
+  priority          Int       @default(0)
+  isRead            Boolean   @default(false) @map("is_read")
+  isArchived        Boolean   @default(false) @map("is_archived")
+  repliedAt         DateTime? @map("replied_at")
+  createdAt         DateTime  @default(now()) @map("created_at")
+
+  user          User           @relation(fields: [userId], references: [id])
+  socialAccount SocialAccount? @relation(fields: [socialAccountId], references: [id])
+
+  @@index([userId])
+  @@index([userId, isRead])
+  @@index([userId, priority(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+  @@map("community_messages")
+}
+
+model CommunityReplyTemplate {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  teamId       String?  @map("team_id") @db.Uuid
+  name         String
+  templateText String   @map("template_text")
+  category     String?
+  timesUsed    Int      @default(0) @map("times_used")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  user User  @relation(fields: [userId], references: [id])
+  team Team? @relation(fields: [teamId], references: [id])
+
+  @@index([userId])
+  @@map("community_reply_templates")
+}
+
+// =============================================================================
+// Subscriptions & Billing
+// =============================================================================
+
+model Subscription {
+  id                   String    @id @default(uuid()) @db.Uuid
+  userId               String    @map("user_id") @db.Uuid
+  teamId               String?   @map("team_id") @db.Uuid
+  stripeSubscriptionId String?   @unique @map("stripe_subscription_id")
+  stripeCustomerId     String    @map("stripe_customer_id")
+  stripePriceId        String?   @map("stripe_price_id")
+  tier                 String
+  status               String    @default("incomplete")
+  currentPeriodStart   DateTime? @map("current_period_start")
+  currentPeriodEnd     DateTime? @map("current_period_end")
+  cancelAtPeriodEnd    Boolean   @default(false) @map("cancel_at_period_end")
+  canceledAt           DateTime? @map("canceled_at")
+  clipsUsed            Int       @default(0) @map("clips_used")
+  clipsLimit           Int       @map("clips_limit")
+  trialEndsAt          DateTime? @map("trial_ends_at")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  user User  @relation(fields: [userId], references: [id])
+  team Team? @relation(fields: [teamId], references: [id])
+
+  @@index([userId])
+  @@index([stripeSubscriptionId])
+  @@index([status])
+  @@map("subscriptions")
+}
+
+// =============================================================================
+// System Tables
+// =============================================================================
+
+model ApiKey {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String?   @map("user_id") @db.Uuid
+  teamId      String?   @map("team_id") @db.Uuid
+  name        String
+  keyHash     String    @unique @map("key_hash")
+  keyPrefix   String    @map("key_prefix")
+  permissions String[]  @default([])
+  lastUsedAt  DateTime? @map("last_used_at")
+  expiresAt   DateTime? @map("expires_at")
+  isRevoked   Boolean   @default(false) @map("is_revoked")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id])
+  team Team? @relation(fields: [teamId], references: [id])
+
+  @@index([userId])
+  @@index([teamId])
+  @@map("api_keys")
+}
+
+model AiUsage {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  operation     String
+  model         String
+  inputTokens   Int      @default(0) @map("input_tokens")
+  outputTokens  Int      @default(0) @map("output_tokens")
+  costCents     Float    @default(0.0) @map("cost_cents")
+  streamId      String?  @map("stream_id") @db.Uuid
+  clipId        String?  @map("clip_id") @db.Uuid
+  jobId         String?  @map("job_id")
+  processingMs  Int?     @map("processing_ms")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  user   User   @relation(fields: [userId], references: [id])
+  stream Stream? @relation(fields: [streamId], references: [id])
+  clip   Clip?   @relation(fields: [clipId], references: [id])
+
+  @@index([userId, createdAt])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("ai_usage")
+}
+
+model AuditLog {
+  id           String   @id @default(uuid()) @db.Uuid
+  actorId      String?  @map("actor_id")
+  actorType    String?  @map("actor_type")
+  action       String
+  resourceType String   @map("resource_type")
+  resourceId   String?  @map("resource_id") @db.Uuid
+  changes      Json?
+  ipAddress    String?  @map("ip_address")
+  userAgent    String?  @map("user_agent")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([resourceType, resourceId])
+  @@index([actorId, createdAt])
+  @@index([action, createdAt])
+  @@map("audit_log")
+}
+
+model FeatureFlag {
+  id           String   @id @default(uuid()) @db.Uuid
+  flagKey      String   @unique @map("flag_key")
+  description  String?
+  isEnabled    Boolean  @default(false) @map("is_enabled")
+  rolloutPct   Int      @default(100) @map("rollout_pct")
+  allowedTiers String[] @default([]) @map("allowed_tiers")
+  allowedUserIds String[] @default([]) @map("allowed_user_ids")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("feature_flags")
+}
