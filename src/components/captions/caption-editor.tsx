@@ -198,8 +198,8 @@ export function CaptionEditor({ lines, onLinesChange, className }: CaptionEditor
 
 function incrementTime(time: string, seconds: number): string {
   const parts = time.split(':');
-  const secParts = parts[1] ? parts[1].split('.') : ['00', '000'];
-  let totalSecs = parseInt(parts[0]) * 60 + parseInt(secParts[0]) + seconds;
+  const secParts = parts[1] ? parts[1]!.split('.') : ['00', '000'];
+  let totalSecs = parseInt(parts[0]!) * 60 + parseInt(secParts[0]!) + seconds;
   const mins = Math.floor(totalSecs / 60);
   const secs = totalSecs % 60;
   return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}.${secParts[1] || '000'}`;
