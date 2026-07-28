@@ -14,7 +14,6 @@ export default function SignUpPage() {
           colorTextSecondary: '#A1A1AA',
           colorInputBackground: '#1A1A24',
           colorInputText: '#FAFAFA',
-          colorInputBorder: '#2A2A3A',
           colorShimmer: '#6C5CE71A',
           borderRadius: '0.5rem',
           fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
