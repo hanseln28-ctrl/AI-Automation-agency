@@ -152,7 +152,7 @@ export function CaptionEditor({ lines, onLinesChange, className }: CaptionEditor
                               <button
                                 key={emoji}
                                 onClick={() => {
-                                  updateLine(line.id, 'emoji', emoji === line.emoji ? undefined : emoji);
+                                  updateLine(line.id, 'emoji', emoji === line.emoji ? undefined : emoji!);
                                   setShowEmojiPicker(null);
                                 }}
                                 className={cn(
