@@ -173,22 +173,22 @@ export default function StreamDetailPage() {
               {/* Stats Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <StatCard
-                  title="Total Views"
+                  label="Total Views"
                   value={(stream.views ?? 0).toLocaleString()}
                   icon={Eye}
                 />
                 <StatCard
-                  title="Peak Viewers"
+                  label="Peak Viewers"
                   value={(stream.peakViewers ?? 0).toLocaleString()}
                   icon={Users}
                 />
                 <StatCard
-                  title="Chat Messages"
+                  label="Chat Messages"
                   value={(stream.chatMessages ?? 0).toLocaleString()}
                   icon={MessageSquare}
                 />
                 <StatCard
-                  title="Duration"
+                  label="Duration"
                   value={stream.duration}
                   icon={Clock}
                 />
