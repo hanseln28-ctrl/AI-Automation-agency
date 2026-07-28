@@ -20,7 +20,7 @@ const EMOJI_OPTIONS = ['😱', '🔥', '💀', '😤', '😂', '❤️', '🎉',
 export function CaptionEditor({ lines, onLinesChange, className }: CaptionEditorProps) {
   const [showEmojiPicker, setShowEmojiPicker] = React.useState<string | null>(null);
 
-  function updateLine(id: string, field: keyof CaptionLine, value: string) {
+  function updateLine(id: string, field: keyof CaptionLine, value: string | undefined) {
     onLinesChange(lines.map((l) => (l.id === id ? { ...l, [field]: value } : l)));
   }
 
