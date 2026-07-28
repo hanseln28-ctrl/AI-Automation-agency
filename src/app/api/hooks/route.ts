@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     };
 
     for (let i = 0; i < count; i++) {
-      const hookType = types[i % types.length];
+      const hookType = types[i % types.length]!;
       const hook = await db.clipHook.create({
         data: {
           clipId,
