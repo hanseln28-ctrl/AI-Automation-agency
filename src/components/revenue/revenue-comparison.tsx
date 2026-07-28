@@ -9,8 +9,8 @@ import { CATEGORY_COLORS } from './types';
 import type { RevenueSourceCategory } from './types';
 
 export function RevenueComparison() {
-  const currentMonth = MOCK_REVENUE_OVER_TIME[MOCK_REVENUE_OVER_TIME.length - 1];
-  const lastMonth = MOCK_REVENUE_OVER_TIME[MOCK_REVENUE_OVER_TIME.length - 2];
+  const currentMonth = MOCK_REVENUE_OVER_TIME[MOCK_REVENUE_OVER_TIME.length - 1]!;
+  const lastMonth = MOCK_REVENUE_OVER_TIME[MOCK_REVENUE_OVER_TIME.length - 2]!;
 
   const categories: { key: RevenueSourceCategory; label: string; current: number; previous: number }[] = [
     { key: 'twitch', label: 'Twitch', current: currentMonth.twitch, previous: lastMonth.twitch },

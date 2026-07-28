@@ -71,7 +71,7 @@ export const PostComposer: React.FC<PostComposerProps> = ({
 
   // Derived
   const selectedClip = MOCK_CLIPS_FOR_POST.find((c) => c.id === selectedClipId);
-  const primaryCaption = platforms.length > 0 ? (captions[platforms[0]] || '') : '';
+  const primaryCaption = platforms.length > 0 ? (captions[platforms[0]!] || '') : '';
 
   const toggleSettings = (p: PublisherPlatform) => {
     setExpandedSettings((prev) => {
@@ -336,7 +336,7 @@ export const PostComposer: React.FC<PostComposerProps> = ({
 
               {/* Active preview */}
               {(() => {
-                const displayPlatform = activePreviewPlatform || platforms[0];
+                const displayPlatform = activePreviewPlatform || platforms[0]!;
                 return (
                   <PostPreview
                     platform={displayPlatform}

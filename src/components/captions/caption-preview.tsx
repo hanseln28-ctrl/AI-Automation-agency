@@ -45,7 +45,7 @@ export function CaptionPreview({
     return () => clearInterval(interval);
   }, []);
 
-  const activeLine = PREVIEW_LINES[activeLineIndex];
+  const activeLine = PREVIEW_LINES[activeLineIndex]!;
   const styleConfig = CAPTION_STYLE_CONFIGS.find((s) => s.key === style);
 
   return (

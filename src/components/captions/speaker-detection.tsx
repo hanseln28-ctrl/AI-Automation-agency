@@ -54,7 +54,7 @@ export function SpeakerDetection({ lines, onSpeakerRename, className }: SpeakerD
       {/* Speakers list */}
       <div className="space-y-3">
         {speakers.map((speaker, i) => {
-          const colors = SPEAKER_COLORS[speaker.colorIndex] || SPEAKER_COLORS[1];
+          const colors = (SPEAKER_COLORS[speaker.colorIndex] || SPEAKER_COLORS['1'])!;
           const percentage = ((speaker.count / totalLines) * 100).toFixed(0);
 
           return (
