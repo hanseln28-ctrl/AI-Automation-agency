@@ -1,41 +1,58 @@
-// ── Customer Portal Redirect ──
-// Creates a Stripe Customer Portal session and returns the URL.
-// The portal allows users to manage subscriptions, payment methods, and invoices.
-//
-// POST /api/billing/portal
-// Body: { customerId: "cus_..." }
+// POST /api/billing/portal — Redirect to Stripe Customer Portal
+// Authenticated endpoint — uses Clerk session to identify user
 
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
+import { db } from '@/lib/db/prisma';
+import { getStripe } from '@/lib/stripe/helpers';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { customerId } = body as { customerId: string };
-
-    if (!customerId) {
+    const { userId: clerkId } = await auth();
+    if (!clerkId) {
       return NextResponse.json(
-        { error: 'Missing required field: customerId' },
-        { status: 400 },
+        { success: false, error: 'Authentication required', code: 'AUTHENTICATION_REQUIRED' },
+        { status: 401 },
       );
     }
 
-    // In production:
-    // const stripe = getStripe();
-    // const session = await stripe.billingPortal.sessions.create({
-    //   customer: customerId,
-    //   return_url: `${request.nextUrl.origin}/settings/billing`,
-    // });
-    // return NextResponse.json({ url: session.url });
+    const user = await db.user.findUnique({ where: { clerkId } });
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: 'User not found', code: 'RESOURCE_NOT_FOUND' },
+        { status: 404 },
+      );
+    }
+
+    // Find Stripe customer
+    const subscription = await db.subscription.findFirst({
+      where: { userId: user.id, status: { not: 'incomplete' } },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const customerId = subscription?.stripeCustomerId;
+    if (!customerId) {
+      return NextResponse.json(
+        { success: false, error: 'No Stripe customer found. Please subscribe first.', code: 'RESOURCE_NOT_FOUND' },
+        { status: 404 },
+      );
+    }
+
+    // Create Stripe Customer Portal session
+    const stripe = getStripe();
+    const session = await stripe.billingPortal.sessions.create({
+      customer: customerId,
+      return_url: `${request.nextUrl.origin}/settings/billing`,
+    });
 
     return NextResponse.json({
-      url: '/settings/billing',
-      message: 'Customer portal not yet configured. Redirecting to billing page.',
+      success: true,
+      data: { url: session.url },
     });
   } catch (error) {
-    console.error('[Portal] Error creating portal session:', error);
+    console.error('[Billing Portal] Error:', error);
     return NextResponse.json(
-      { error: 'Failed to create portal session' },
+      { success: false, error: 'Failed to create portal session', code: 'INTERNAL_ERROR' },
       { status: 500 },
     );
   }

@@ -44,6 +44,7 @@ model User {
   revenueSources    RevenueSource[]
   aiUsage           AiUsage[]
   teamMemberships   TeamMember[]
+  autoReplyRules    AutoReplyRule[]
 
   @@map("users")
 }
@@ -409,6 +410,7 @@ model Campaign {
   user         User          @relation(fields: [userId], references: [id])
   team         Team?         @relation(fields: [teamId], references: [id])
   sponsorships Sponsorship[]
+  deliverables Deliverable[]
   revenueSources RevenueSource[]
 
   @@index([userId])
@@ -633,4 +635,49 @@ model FeatureFlag {
   updatedAt    DateTime @updatedAt @map("updated_at")
 
   @@map("feature_flags")
+}
+
+// =============================================================================
+// Sponsorship Deliverables
+// =============================================================================
+
+model Deliverable {
+  id            String    @id @default(uuid()) @db.Uuid
+  campaignId    String    @map("campaign_id") @db.Uuid
+  title         String
+  type          String    @default("clip")
+  platform      String    @default("tiktok")
+  dueDate       DateTime? @map("due_date")
+  status        String    @default("pending")
+  clipId        String?   @map("clip_id") @db.Uuid
+  notes         String?
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  clip     Clip?    @relation(fields: [clipId], references: [id])
+
+  @@index([campaignId])
+  @@index([status])
+  @@map("deliverables")
+}
+
+// =============================================================================
+// Community Auto-Reply Rules
+// =============================================================================
+
+model AutoReplyRule {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @map("user_id") @db.Uuid
+  triggerKeywords String[] @map("trigger_keywords")
+  responseText    String   @map("response_text")
+  isEnabled       Boolean  @default(true) @map("is_enabled")
+  usageCount      Int      @default(0) @map("usage_count")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("auto_reply_rules")
 }
