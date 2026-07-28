@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
     const now = new Date();
     const daysMap: Record<string, number> = { '7d': 7, '30d': 30, '90d': 90, '1y': 365 };
     const daysAgo = new Date(now);
-    daysAgo.setDate(daysAgo.getDate() - daysMap[period]);
+    daysAgo.setDate(daysAgo.getDate() - (daysMap[period] ?? 30));
 
     // Clip stats aggregation
     const clipWhere: Record<string, unknown> = {
