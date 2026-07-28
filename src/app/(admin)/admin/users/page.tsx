@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { useRouter } from 'next/navigation';
 import { PageHeader } from '@/components/shared/page-header';
 import { UsersTable } from '@/components/admin/users-table';
@@ -41,7 +41,7 @@ export default function AdminUsersPage() {
   };
 
   return (
-    <motion.div
+    <MotionDiv
       className="space-y-6"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
@@ -55,6 +55,6 @@ export default function AdminUsersPage() {
         onSuspend={handleSuspend}
         onDelete={handleDelete}
       />
-    </motion.div>
+    </MotionDiv>
   );
 }

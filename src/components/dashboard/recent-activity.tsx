@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import {
   Upload,
   Scissors,
@@ -130,7 +130,7 @@ export function RecentActivity() {
 
           <div className="space-y-1">
             {ACTIVITIES.map((activity, i) => (
-              <motion.div
+              <MotionDiv
                 key={activity.id}
                 variants={staggerItem}
                 custom={i}
@@ -167,7 +167,7 @@ export function RecentActivity() {
                     activity.color,
                   )}
                 />
-              </motion.div>
+              </MotionDiv>
             ))}
           </div>
         </div>

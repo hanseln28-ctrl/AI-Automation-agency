@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Check, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { Badge } from '@/components/ui/badge';
@@ -22,7 +22,7 @@ export function PlanCard({ plan, billingPeriod, isCurrentPlan, onSelect, disable
   const isFree = plan.priceMonthly === 0;
 
   return (
-    <motion.div
+    <MotionDiv
       whileHover={!disabled ? { y: -4, scale: 1.01 } : undefined}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className={cn(
@@ -111,6 +111,6 @@ export function PlanCard({ plan, billingPeriod, isCurrentPlan, onSelect, disable
       >
         {isCurrentPlan ? 'Current Plan' : isFree ? 'Get Started' : 'Upgrade'}
       </button>
-    </motion.div>
+    </MotionDiv>
   );
 }

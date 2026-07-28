@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { MessageSquare, AlertTriangle, Clock, CheckCircle2, TrendingUp } from 'lucide-react';
 import { StatCard } from '@/components/shared/stat-card';
 import { staggerItem } from '@/lib/utils/animations';
@@ -25,7 +25,7 @@ export function CommunityStats({ stats }: { stats?: Partial<CommunityStats> }) {
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <motion.div variants={staggerItem}>
+      <MotionDiv variants={staggerItem}>
         <StatCard
           icon={MessageSquare}
           label="Unread Messages"
@@ -34,8 +34,8 @@ export function CommunityStats({ stats }: { stats?: Partial<CommunityStats> }) {
           trendLabel="vs yesterday"
           variant="default"
         />
-      </motion.div>
-      <motion.div variants={staggerItem}>
+      </MotionDiv>
+      <MotionDiv variants={staggerItem}>
         <StatCard
           icon={AlertTriangle}
           label="Pending Moderation"
@@ -44,8 +44,8 @@ export function CommunityStats({ stats }: { stats?: Partial<CommunityStats> }) {
           trendLabel="vs yesterday"
           variant="warning"
         />
-      </motion.div>
-      <motion.div variants={staggerItem}>
+      </MotionDiv>
+      <MotionDiv variants={staggerItem}>
         <StatCard
           icon={CheckCircle2}
           label="Response Rate"
@@ -54,8 +54,8 @@ export function CommunityStats({ stats }: { stats?: Partial<CommunityStats> }) {
           trendLabel="this week"
           variant="success"
         />
-      </motion.div>
-      <motion.div variants={staggerItem}>
+      </MotionDiv>
+      <MotionDiv variants={staggerItem}>
         <StatCard
           icon={Clock}
           label="Avg Response Time"
@@ -64,7 +64,7 @@ export function CommunityStats({ stats }: { stats?: Partial<CommunityStats> }) {
           trendLabel="faster this week"
           variant="default"
         />
-      </motion.div>
+      </MotionDiv>
     </div>
   );
 }

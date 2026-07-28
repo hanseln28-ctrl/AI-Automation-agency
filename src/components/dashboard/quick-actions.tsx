@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Tv, Scissors, Send, BarChart3, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils/cn';
@@ -50,7 +50,7 @@ export function QuickActions() {
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
       {ACTIONS.map((action) => (
-        <motion.div key={action.label} variants={staggerItem}>
+        <MotionDiv key={action.label} variants={staggerItem}>
           <Link
             href={action.href}
             className={cn(
@@ -90,7 +90,7 @@ export function QuickActions() {
               </div>
             </div>
           </Link>
-        </motion.div>
+        </MotionDiv>
       ))}
     </div>
   );

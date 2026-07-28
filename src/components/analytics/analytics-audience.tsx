@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { staggerContainer, staggerItem } from '@/lib/utils/animations';
 import { ChartPlaceholder } from './chart-placeholder';
@@ -27,14 +27,14 @@ const GENDER_COLORS = {
 
 export function AnalyticsAudience() {
   return (
-    <motion.div
+    <MotionDiv
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
       className="space-y-6"
     >
       {/* Follower Growth */}
-      <motion.div variants={staggerItem}>
+      <MotionDiv variants={staggerItem}>
         <Card>
           <CardHeader>
             <CardTitle>Follower Growth</CardTitle>
@@ -43,10 +43,10 @@ export function AnalyticsAudience() {
             <ChartPlaceholder type="area" height={260} />
           </CardContent>
         </Card>
-      </motion.div>
+      </MotionDiv>
 
       {/* Demographics + Geography */}
-      <motion.div variants={staggerItem} className="grid gap-6 lg:grid-cols-2">
+      <MotionDiv variants={staggerItem} className="grid gap-6 lg:grid-cols-2">
         {/* Demographics */}
         <Card>
           <CardHeader>
@@ -136,7 +136,7 @@ export function AnalyticsAudience() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
-    </motion.div>
+      </MotionDiv>
+    </MotionDiv>
   );
 }

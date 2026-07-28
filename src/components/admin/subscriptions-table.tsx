@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { DollarSign, TrendingUp, Users, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { Badge } from '@/components/ui/badge';
@@ -66,7 +66,7 @@ export function SubscriptionsTable({ subscriptions }: SubscriptionsTableProps) {
         <h3 className="text-sm font-semibold text-text-primary mb-4">Revenue Overview</h3>
         <div className="h-[200px] flex items-end gap-2">
           {[40, 55, 48, 70, 62, 85, 75, 90, 82, 95, 88, 100].map((val, i) => (
-            <motion.div
+            <MotionDiv
               key={i}
               className="flex-1 rounded-t-md bg-accent/60"
               initial={{ height: 0 }}
@@ -103,7 +103,7 @@ export function SubscriptionsTable({ subscriptions }: SubscriptionsTableProps) {
             </thead>
             <tbody>
               {subscriptions.map((sub, i) => (
-                <motion.tr
+                <MotionTr
                   key={sub.id}
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -142,7 +142,7 @@ export function SubscriptionsTable({ subscriptions }: SubscriptionsTableProps) {
                     </span>
                     <span className="text-2xs text-text-tertiary block">/mo</span>
                   </td>
-                </motion.tr>
+                </MotionTr>
               ))}
             </tbody>
           </table>

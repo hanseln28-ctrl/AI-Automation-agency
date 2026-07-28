@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { History, CheckCircle2, Trash2, Ban, EyeOff } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { Badge } from '@/components/ui/badge';
@@ -43,7 +43,7 @@ export function ModerationLog({ entries }: ModerationLogProps) {
           {entries.map((entry, i) => {
             const actionCfg = MODERATION_ACTION_CONFIG[entry.action];
             return (
-              <motion.div
+              <MotionDiv
                 key={entry.id}
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -76,7 +76,7 @@ export function ModerationLog({ entries }: ModerationLogProps) {
                     <p className="text-2xs text-text-tertiary">by {entry.moderator}</p>
                   </div>
                 </Card>
-              </motion.div>
+              </MotionDiv>
             );
           })}
         </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -19,7 +19,7 @@ export default function NewCampaignPage() {
   };
 
   return (
-    <motion.div
+    <MotionDiv
       className="space-y-6 animate-fade-in"
       variants={staggerContainer}
       initial="hidden"
@@ -35,6 +35,6 @@ export default function NewCampaignPage() {
         onSubmit={handleSubmit}
         onCancel={() => router.push('/sponsorships')}
       />
-    </motion.div>
+    </MotionDiv>
   );
 }

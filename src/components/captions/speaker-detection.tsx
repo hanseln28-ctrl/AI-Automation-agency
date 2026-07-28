@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Icon } from '@/components/shared/icon';
 import { Input } from '@/components/ui/input';
@@ -58,7 +58,7 @@ export function SpeakerDetection({ lines, onSpeakerRename, className }: SpeakerD
           const percentage = ((speaker.count / totalLines) * 100).toFixed(0);
 
           return (
-            <motion.div
+            <MotionDiv
               key={speaker.label}
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
@@ -90,14 +90,14 @@ export function SpeakerDetection({ lines, onSpeakerRename, className }: SpeakerD
 
               {/* Progress bar */}
               <div className="h-1.5 rounded-full bg-background-surface overflow-hidden">
-                <motion.div
+                <MotionDiv
                   className={cn('h-full rounded-full', colors.bar)}
                   initial={{ width: 0 }}
                   animate={{ width: `${percentage}%` }}
                   transition={{ duration: 0.5, delay: i * 0.1, ease: 'easeOut' }}
                 />
               </div>
-            </motion.div>
+            </MotionDiv>
           );
         })}
       </div>
@@ -108,7 +108,7 @@ export function SpeakerDetection({ lines, onSpeakerRename, className }: SpeakerD
           {Array.from({ length: 40 }).map((_, i) => {
             const h = 20 + Math.sin(i * 0.5) * 15 + Math.random() * 10;
             return (
-              <motion.div
+              <MotionDiv
                 key={i}
                 className="w-1 rounded-t-sm bg-accent/40"
                 animate={{ height: `${h}%` }}

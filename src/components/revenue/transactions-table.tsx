@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { staggerItem } from '@/lib/utils/animations';
@@ -21,7 +21,7 @@ const statusBadgeVariant: Record<string, 'success' | 'warning' | 'danger'> = {
 
 export function TransactionsTable({ transactions = MOCK_TRANSACTIONS }: TransactionsTableProps) {
   return (
-    <motion.div variants={staggerItem}>
+    <MotionDiv variants={staggerItem}>
       <Card>
         <CardHeader>
           <CardTitle>Recent Transactions</CardTitle>
@@ -82,6 +82,6 @@ export function TransactionsTable({ transactions = MOCK_TRANSACTIONS }: Transact
           </div>
         </CardContent>
       </Card>
-    </motion.div>
+    </MotionDiv>
   );
 }

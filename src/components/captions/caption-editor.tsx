@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -97,7 +97,7 @@ export function CaptionEditor({ lines, onLinesChange, className }: CaptionEditor
         <div className="divide-y divide-border-subtle">
           <AnimatePresence initial={false}>
             {lines.map((line, i) => (
-              <motion.div
+              <MotionDiv
                 key={line.id}
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
@@ -139,7 +139,7 @@ export function CaptionEditor({ lines, onLinesChange, className }: CaptionEditor
                   </button>
                   <AnimatePresence>
                     {showEmojiPicker === line.id && (
-                      <motion.div
+                      <MotionDiv
                         initial={{ opacity: 0, y: -4, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -4, scale: 0.95 }}
@@ -165,7 +165,7 @@ export function CaptionEditor({ lines, onLinesChange, className }: CaptionEditor
                             ))}
                           </div>
                         </div>
-                      </motion.div>
+                      </MotionDiv>
                     )}
                   </AnimatePresence>
                 </div>
@@ -187,7 +187,7 @@ export function CaptionEditor({ lines, onLinesChange, className }: CaptionEditor
                 >
                   <Icon name="trash-2" size="xs" />
                 </Button>
-              </motion.div>
+              </MotionDiv>
             ))}
           </AnimatePresence>
         </div>

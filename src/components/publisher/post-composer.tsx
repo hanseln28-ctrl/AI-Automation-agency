@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Icon } from '@/components/shared/icon';
 import { Button } from '@/components/ui/button';
@@ -138,7 +138,7 @@ export const PostComposer: React.FC<PostComposerProps> = ({
           <h3 className="mb-3 text-sm font-semibold text-text-primary">Select Clip/Media</h3>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {MOCK_CLIPS_FOR_POST.map((clip) => (
-              <motion.button
+              <MotionButton
                 key={clip.id}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setSelectedClipId(clip.id)}
@@ -159,7 +159,7 @@ export const PostComposer: React.FC<PostComposerProps> = ({
                     <Icon name="check" size="xs" color="text-white" />
                   </div>
                 )}
-              </motion.button>
+              </MotionButton>
             ))}
           </div>
         </div>

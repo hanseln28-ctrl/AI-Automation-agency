@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Calendar, DollarSign, TrendingUp, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
@@ -25,7 +25,7 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
   const budgetPct = campaign.budget > 0 ? Math.round((campaign.budgetUsed / campaign.budget) * 100) : 0;
 
   return (
-    <motion.div variants={staggerItem}>
+    <MotionDiv variants={staggerItem}>
       <Link href={`/sponsorships/${campaign.id}`}>
         <Card className="group cursor-pointer transition-all duration-200 hover:shadow-elevated hover:border-accent/20">
           <CardContent className="p-5">
@@ -93,6 +93,6 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
           </CardContent>
         </Card>
       </Link>
-    </motion.div>
+    </MotionDiv>
   );
 }

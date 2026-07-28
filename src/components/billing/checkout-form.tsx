@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Lock, CreditCard, Shield, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils/cn';
@@ -87,13 +87,13 @@ export function CheckoutForm({
                 </div>
               </div>
               {billingPeriod === 'annual' && (
-                <motion.p
+                <MotionP
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   className="mt-2 text-xs text-success"
                 >
                   You save {formatCurrency(annualSavings)} per year
-                </motion.p>
+                </MotionP>
               )}
             </CardContent>
           </Card>
@@ -162,7 +162,7 @@ export function CheckoutForm({
         >
           {isLoading ? (
             <span className="flex items-center gap-2">
-              <motion.div
+              <MotionDiv
                 className="h-4 w-4 rounded-full border-2 border-white border-t-transparent"
                 animate={{ rotate: 360 }}
                 transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}

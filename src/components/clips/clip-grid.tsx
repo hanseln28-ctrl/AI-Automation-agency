@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import { EmptyState } from '@/components/shared/empty-state';
 import { Video } from 'lucide-react';
 import { ClipCard } from './clip-card';

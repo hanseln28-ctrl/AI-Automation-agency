@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/shared/icon';
@@ -47,7 +47,7 @@ export function CaptionExport({ clipId, clipTitle, className }: CaptionExportPro
       {/* Format selector */}
       <div className="space-y-2">
         {CAPTION_EXPORT_FORMATS.map((fmt, i) => (
-          <motion.button
+          <MotionButton
             key={fmt.format}
             initial={{ opacity: 0, x: -4 }}
             animate={{ opacity: 1, x: 0 }}
@@ -70,7 +70,7 @@ export function CaptionExport({ clipId, clipTitle, className }: CaptionExportPro
               )}
             >
               {selectedFormat === fmt.format && (
-                <motion.div
+                <MotionDiv
                   layoutId="exportRadio"
                   className="h-2 w-2 rounded-full bg-accent"
                 />
@@ -83,7 +83,7 @@ export function CaptionExport({ clipId, clipTitle, className }: CaptionExportPro
             </div>
 
             <span className="text-2xs font-mono text-text-tertiary shrink-0">{fmt.extension}</span>
-          </motion.button>
+          </MotionButton>
         ))}
       </div>
 

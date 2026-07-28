@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/shared/icon';
@@ -14,7 +14,7 @@ interface GenerateButtonProps {
 
 export function GenerateButton({ onClick, isGenerating, className }: GenerateButtonProps) {
   return (
-    <motion.div
+    <MotionDiv
       className={cn('flex justify-center', className)}
       whileHover={!isGenerating ? { scale: 1.02 } : undefined}
       whileTap={!isGenerating ? { scale: 0.98 } : undefined}
@@ -35,18 +35,18 @@ export function GenerateButton({ onClick, isGenerating, className }: GenerateBut
 
         {isGenerating ? (
           <span className="flex items-center gap-3">
-            <motion.div
+            <MotionDiv
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
             >
               <Icon name="loader-2" size="sm" color="text-white" />
-            </motion.div>
-            <motion.span
+            </MotionDiv>
+            <MotionSpan
               animate={{ opacity: [1, 0.5, 1] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
               AI is generating hooks...
-            </motion.span>
+            </MotionSpan>
           </span>
         ) : (
           <span className="relative z-10 flex items-center gap-2">
@@ -55,6 +55,6 @@ export function GenerateButton({ onClick, isGenerating, className }: GenerateBut
           </span>
         )}
       </Button>
-    </motion.div>
+    </MotionDiv>
   );
 }

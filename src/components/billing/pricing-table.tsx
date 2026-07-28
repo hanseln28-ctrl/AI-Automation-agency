@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { PLAN_CONFIG } from '@/lib/stripe/helpers';
 import type { BillingTier } from '@/lib/stripe/helpers';
 import { PlanCard } from './plan-card';
@@ -21,14 +21,14 @@ export function PricingTable({
   const tiers = Object.values(PLAN_CONFIG);
 
   return (
-    <motion.div
+    <MotionDiv
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
       className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
     >
       {tiers.map((plan) => (
-        <motion.div key={plan.tier} variants={staggerItem}>
+        <MotionDiv key={plan.tier} variants={staggerItem}>
           <PlanCard
             plan={plan}
             billingPeriod={billingPeriod}
@@ -36,8 +36,8 @@ export function PricingTable({
             onSelect={() => onSelectPlan(plan.tier)}
             disabled={plan.tier === 'free'}
           />
-        </motion.div>
+        </MotionDiv>
       ))}
-    </motion.div>
+    </MotionDiv>
   );
 }

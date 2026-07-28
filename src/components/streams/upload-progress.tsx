@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Progress } from '@/components/ui/progress';
 import { Check, Loader2 } from 'lucide-react';
@@ -76,12 +76,12 @@ export function UploadProgress({ currentStage, progress }: UploadProgressProps) 
                   >
                     {isComplete && <Check className="h-3 w-3 text-white" />}
                     {isCurrent && (
-                      <motion.div
+                      <MotionDiv
                         animate={{ rotate: 360 }}
                         transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
                       >
                         <Loader2 className="h-3 w-3 text-accent" />
-                      </motion.div>
+                      </MotionDiv>
                     )}
                   </div>
                   {/* Connector line */}
@@ -110,13 +110,13 @@ export function UploadProgress({ currentStage, progress }: UploadProgressProps) 
                     {stage.label}
                   </p>
                   {isCurrent && (
-                    <motion.p
+                    <MotionP
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       className="text-xs text-text-secondary mt-0.5"
                     >
                       {stage.description}
-                    </motion.p>
+                    </MotionP>
                   )}
                 </div>
               </div>

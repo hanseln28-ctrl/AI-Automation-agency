@@ -1,14 +1,14 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { PageHeader } from '@/components/shared/page-header';
 import { AIUsageDashboard } from '@/components/admin/ai-usage-dashboard';
 import { MOCK_AI_USAGE } from '@/components/admin/mock-data';
 
 export default function AdminAIUsagePage() {
   return (
-    <motion.div
+    <MotionDiv
       className="space-y-6"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
@@ -19,6 +19,6 @@ export default function AdminAIUsagePage() {
       />
 
       <AIUsageDashboard records={MOCK_AI_USAGE} />
-    </motion.div>
+    </MotionDiv>
   );
 }

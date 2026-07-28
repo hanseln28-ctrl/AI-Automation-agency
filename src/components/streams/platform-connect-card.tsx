@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -33,7 +33,7 @@ export function PlatformConnectCard({
   const isConnected = connection.connected;
 
   return (
-    <motion.div
+    <MotionDiv
       whileHover={{ y: -2, transition: { duration: 0.2 } }}
       className="h-full"
     >
@@ -122,6 +122,6 @@ export function PlatformConnectCard({
           )}
         </div>
       </Card>
-    </motion.div>
+    </MotionDiv>
   );
 }

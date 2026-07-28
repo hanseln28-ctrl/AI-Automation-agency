@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import { Search, Send, Sparkles, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { Input } from '@/components/ui/input';
@@ -192,7 +192,7 @@ export function MessagesPanel({ conversations, onSendReply }: MessagesPanelProps
             {/* Reply input */}
             <div className="border-t border-border-subtle p-4 space-y-3">
               {aiSuggest && aiSuggestedReply && (
-                <motion.div
+                <MotionDiv
                   initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="rounded-lg border border-accent-muted bg-accent-subtle/30 px-3 py-2"
@@ -202,7 +202,7 @@ export function MessagesPanel({ conversations, onSendReply }: MessagesPanelProps
                     <span className="text-2xs text-accent font-medium">AI Suggestion</span>
                   </div>
                   <p className="text-xs text-text-secondary">{aiSuggestedReply}</p>
-                </motion.div>
+                </MotionDiv>
               )}
               <div className="flex items-end gap-2">
                 <div className="flex-1">

@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { fadeIn } from '@/lib/utils/animations';
 
@@ -38,7 +38,7 @@ export function StreamTabs({ activeTab, onTabChange }: StreamTabsProps) {
       </div>
 
       <AnimatePresence mode="wait">
-        <motion.div
+        <MotionDiv
           key={activeTab}
           variants={fadeIn}
           initial="hidden"
@@ -46,7 +46,7 @@ export function StreamTabs({ activeTab, onTabChange }: StreamTabsProps) {
           exit="exit"
         >
           {/* Content rendered by parent */}
-        </motion.div>
+        </MotionDiv>
       </AnimatePresence>
     </div>
   );

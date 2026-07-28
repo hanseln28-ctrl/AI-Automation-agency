@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import {
   Eye,
   Users,
@@ -160,7 +160,7 @@ export default function StreamDetailPage() {
       </div>
 
       <AnimatePresence mode="wait">
-        <motion.div
+        <MotionDiv
           key={activeTab}
           variants={fadeIn}
           initial="hidden"
@@ -239,7 +239,7 @@ export default function StreamDetailPage() {
               {stream.status === 'completed' || stream.status === 'generating_clips' ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {MOCK_CLIPS.map((clip, idx) => (
-                    <motion.div
+                    <MotionDiv
                       key={clip.id}
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -275,7 +275,7 @@ export default function StreamDetailPage() {
                           </span>
                         </div>
                       </div>
-                    </motion.div>
+                    </MotionDiv>
                   ))}
                 </div>
               ) : (
@@ -391,7 +391,7 @@ export default function StreamDetailPage() {
               </Card>
             </div>
           )}
-        </motion.div>
+        </MotionDiv>
       </AnimatePresence>
     </div>
   );

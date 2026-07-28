@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import {
   Bot,
   Plus,
@@ -100,7 +100,7 @@ export function AutoReplies({
                 : null;
 
             return (
-              <motion.div
+              <MotionDiv
                 key={rule.id}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -204,7 +204,7 @@ export function AutoReplies({
                     </div>
                   </div>
                 </Card>
-              </motion.div>
+              </MotionDiv>
             );
           })}
         </div>

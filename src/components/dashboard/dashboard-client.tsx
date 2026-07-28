@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import { staggerContainer, fadeIn } from '@/lib/utils/animations';
 import {
   WelcomeBar,
@@ -39,7 +39,7 @@ export function DashboardClient({ userName }: DashboardClientProps) {
       {/* Loading State */}
       <AnimatePresence mode="wait">
         {isLoading ? (
-          <motion.div
+          <MotionDiv
             key="skeleton"
             variants={fadeIn}
             initial="hidden"
@@ -59,9 +59,9 @@ export function DashboardClient({ userName }: DashboardClientProps) {
                 <NotificationsPanelSkeleton />
               </div>
             </div>
-          </motion.div>
+          </MotionDiv>
         ) : (
-          <motion.div
+          <MotionDiv
             key="content"
             variants={staggerContainer}
             initial="hidden"
@@ -92,7 +92,7 @@ export function DashboardClient({ userName }: DashboardClientProps) {
                 <NotificationsPanel />
               </div>
             </div>
-          </motion.div>
+          </MotionDiv>
         )}
       </AnimatePresence>
     </div>

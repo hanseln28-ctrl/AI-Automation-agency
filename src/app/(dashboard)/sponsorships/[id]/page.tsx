@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { staggerContainer } from '@/lib/utils/animations';
@@ -29,7 +29,7 @@ export default function CampaignDetailPage({ params }: { params: { id: string } 
   }
 
   return (
-    <motion.div
+    <MotionDiv
       className="space-y-6 animate-fade-in"
       variants={staggerContainer}
       initial="hidden"
@@ -73,7 +73,7 @@ export default function CampaignDetailPage({ params }: { params: { id: string } 
           <ReportGenerator campaignName={campaign.campaignName} brandName={campaign.brandName} />
         </TabsContent>
       </Tabs>
-    </motion.div>
+    </MotionDiv>
   );
 }
 

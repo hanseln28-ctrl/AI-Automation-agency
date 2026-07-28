@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Icon } from '@/components/shared/icon';
@@ -17,7 +17,7 @@ interface RevenueBreakdownProps {
 
 export function RevenueBreakdown({ sources = MOCK_REVENUE_SOURCES }: RevenueBreakdownProps) {
   return (
-    <motion.div
+    <MotionDiv
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
@@ -26,7 +26,7 @@ export function RevenueBreakdown({ sources = MOCK_REVENUE_SOURCES }: RevenueBrea
       {sources.map((source) => (
         <RevenueSourceCard key={source.source} source={source} />
       ))}
-    </motion.div>
+    </MotionDiv>
   );
 }
 
@@ -34,7 +34,7 @@ function RevenueSourceCard({ source }: { source: RevenueSourceCardType }) {
   const isPositive = source.trend >= 0;
 
   return (
-    <motion.div variants={staggerItem}>
+    <MotionDiv variants={staggerItem}>
       <Card className="group transition-all duration-200 hover:shadow-elevated">
         <CardContent className="p-4">
           <div className="mb-3 flex items-center justify-between">
@@ -60,6 +60,6 @@ function RevenueSourceCard({ source }: { source: RevenueSourceCardType }) {
           </p>
         </CardContent>
       </Card>
-    </motion.div>
+    </MotionDiv>
   );
 }

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -35,7 +35,7 @@ export function ClipCard({ clip, index }: ClipCardProps) {
   const formatConfig = FORMAT_CONFIG[clip.format];
 
   return (
-    <motion.div
+    <MotionDiv
       layout
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
@@ -134,6 +134,6 @@ export function ClipCard({ clip, index }: ClipCardProps) {
           </DropdownMenu>
         </div>
       </div>
-    </motion.div>
+    </MotionDiv>
   );
 }

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { PageHeader } from '@/components/shared/page-header';
 import { Button } from '@/components/ui/button';
@@ -146,7 +146,7 @@ export default function PublishingPage() {
   };
 
   return (
-    <motion.div
+    <MotionDiv
       className="space-y-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -155,14 +155,14 @@ export default function PublishingPage() {
       {/* Toast */}
       <AnimatePresence>
         {toastMessage && (
-          <motion.div
+          <MotionDiv
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             className="fixed left-1/2 top-4 z-50 -translate-x-1/2 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white shadow-lg"
           >
             {toastMessage}
-          </motion.div>
+          </MotionDiv>
         )}
       </AnimatePresence>
 
@@ -209,7 +209,7 @@ export default function PublishingPage() {
       <AnimatePresence mode="wait">
         {/* Queue View */}
         {activeTab === 'queue' && (
-          <motion.div
+          <MotionDiv
             key="queue"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -261,12 +261,12 @@ export default function PublishingPage() {
                 />
               </div>
             )}
-          </motion.div>
+          </MotionDiv>
         )}
 
         {/* Calendar View */}
         {activeTab === 'calendar' && (
-          <motion.div
+          <MotionDiv
             key="calendar"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -283,12 +283,12 @@ export default function PublishingPage() {
               onPostNow={handlePostNow}
               onDelete={handleDelete}
             />
-          </motion.div>
+          </MotionDiv>
         )}
 
         {/* Posted View */}
         {activeTab === 'posted' && (
-          <motion.div
+          <MotionDiv
             key="posted"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -309,12 +309,12 @@ export default function PublishingPage() {
               onSelect={toggleSelect}
               showCheckbox={bulkMode}
             />
-          </motion.div>
+          </MotionDiv>
         )}
 
         {/* Failed View */}
         {activeTab === 'failed' && (
-          <motion.div
+          <MotionDiv
             key="failed"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -328,7 +328,7 @@ export default function PublishingPage() {
               onDelete={handleDelete}
               isLoading={isLoading}
             />
-          </motion.div>
+          </MotionDiv>
         )}
       </AnimatePresence>
 
@@ -342,6 +342,6 @@ export default function PublishingPage() {
         variant="destructive"
         onConfirm={confirmDelete}
       />
-    </motion.div>
+    </MotionDiv>
   );
 }

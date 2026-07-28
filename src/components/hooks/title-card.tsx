@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/shared/icon';
@@ -27,7 +27,7 @@ export function TitleCard({ title, index }: TitleCardProps) {
   }
 
   return (
-    <motion.div
+    <MotionDiv
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: index * 0.04 }}
@@ -35,7 +35,7 @@ export function TitleCard({ title, index }: TitleCardProps) {
     >
       {/* Score indicator bar */}
       <div className="h-1 bg-background-surface">
-        <motion.div
+        <MotionDiv
           className="h-full rounded-r-full bg-gradient-to-r from-accent to-[#8B7CF7]"
           initial={{ width: 0 }}
           animate={{ width: `${title.score}%` }}
@@ -72,7 +72,7 @@ export function TitleCard({ title, index }: TitleCardProps) {
           </Button>
         </div>
       </div>
-    </motion.div>
+    </MotionDiv>
   );
 }
 

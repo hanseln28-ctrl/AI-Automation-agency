@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { slideRight, slideLeft } from '@/lib/utils/animations';
@@ -201,7 +201,7 @@ export default function ImportPage() {
       {/* Tab Content */}
       <AnimatePresence mode="wait">
         {activeTab === 'connect' ? (
-          <motion.div
+          <MotionDiv
             key="connect"
             variants={slideRight}
             initial="hidden"
@@ -219,9 +219,9 @@ export default function ImportPage() {
                 />
               ))}
             </div>
-          </motion.div>
+          </MotionDiv>
         ) : (
-          <motion.div
+          <MotionDiv
             key="upload"
             variants={slideLeft}
             initial="hidden"
@@ -238,7 +238,7 @@ export default function ImportPage() {
                 />
 
                 {selectedFile && (
-                  <motion.div
+                  <MotionDiv
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="rounded-xl border border-border-subtle bg-background-card p-6 space-y-4"
@@ -304,13 +304,13 @@ export default function ImportPage() {
                         Start Import
                       </Button>
                     </div>
-                  </motion.div>
+                  </MotionDiv>
                 )}
               </>
             ) : (
               <UploadProgress currentStage={uploadStage} progress={uploadProgress} />
             )}
-          </motion.div>
+          </MotionDiv>
         )}
       </AnimatePresence>
 

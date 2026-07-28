@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Icon } from '@/components/shared/icon';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -40,7 +40,7 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
         return (
           <Tooltip key={platform}>
             <TooltipTrigger asChild>
-              <motion.button
+              <MotionButton
                 type="button"
                 onClick={() => toggle(platform)}
                 disabled={disabled}
@@ -55,7 +55,7 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
               >
                 <Icon name={cfg.icon as any} size="xs" color={isSelected ? cfg.textClass : 'text-text-tertiary'} />
                 {cfg.label}
-              </motion.button>
+              </MotionButton>
             </TooltipTrigger>
             <TooltipContent side="top">
               {cfg.label} — {cfg.charLimit.toLocaleString()} char limit

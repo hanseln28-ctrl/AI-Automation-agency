@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { FileText, Download, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -49,7 +49,7 @@ export function BillingHistory({ invoices }: BillingHistoryProps) {
         </thead>
         <tbody>
           {invoices.map((invoice, i) => (
-            <motion.tr
+            <MotionTr
               key={invoice.id}
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
@@ -90,7 +90,7 @@ export function BillingHistory({ invoices }: BillingHistoryProps) {
                   </a>
                 </Button>
               </td>
-            </motion.tr>
+            </MotionTr>
           ))}
         </tbody>
       </table>

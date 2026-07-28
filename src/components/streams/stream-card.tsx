@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { MoreHorizontal, Eye, RefreshCw, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { Badge } from '@/components/ui/badge';
@@ -27,7 +27,7 @@ export function StreamCard({ stream, index }: StreamCardProps) {
   const router = useRouter();
 
   return (
-    <motion.div
+    <MotionDiv
       layout
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
@@ -120,6 +120,6 @@ export function StreamCard({ stream, index }: StreamCardProps) {
           </div>
         </div>
       </div>
-    </motion.div>
+    </MotionDiv>
   );
 }

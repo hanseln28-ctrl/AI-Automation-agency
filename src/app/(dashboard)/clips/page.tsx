@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { PageHeader } from '@/components/shared/page-header';
 import { Button } from '@/components/ui/button';
@@ -45,7 +45,7 @@ export default function ClipsPage() {
   });
 
   return (
-    <motion.div
+    <MotionDiv
       className="space-y-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -97,6 +97,6 @@ export default function ClipsPage() {
         isLoading={isLoading}
         activeTab={activeTab}
       />
-    </motion.div>
+    </MotionDiv>
   );
 }

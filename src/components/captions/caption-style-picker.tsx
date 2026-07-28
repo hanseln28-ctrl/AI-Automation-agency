@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Icon } from '@/components/shared/icon';
 import type { CaptionStyle } from './types';
@@ -19,7 +19,7 @@ export function CaptionStylePicker({ selected, onSelect, className }: CaptionSty
       {CAPTION_STYLE_CONFIGS.map((style, i) => {
         const isSelected = selected === style.key;
         return (
-          <motion.button
+          <MotionButton
             key={style.key}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -41,7 +41,7 @@ export function CaptionStylePicker({ selected, onSelect, className }: CaptionSty
             >
               {/* Animated text preview */}
               <div className="absolute inset-0 flex items-center justify-center p-2">
-                <motion.span
+                <MotionSpan
                   className={cn(
                     'text-center text-xs font-bold text-white',
                     style.key === 'minimal' && 'font-light tracking-widest',
@@ -59,7 +59,7 @@ export function CaptionStylePicker({ selected, onSelect, className }: CaptionSty
                   transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                 >
                   {style.previewText}
-                </motion.span>
+                </MotionSpan>
               </div>
 
               {/* Style icon watermark */}
@@ -83,7 +83,7 @@ export function CaptionStylePicker({ selected, onSelect, className }: CaptionSty
 
             {/* Select indicator */}
             {isSelected && (
-              <motion.div
+              <MotionDiv
                 layoutId="captionStyleCheck"
                 className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-accent flex items-center justify-center"
                 initial={{ scale: 0 }}
@@ -91,9 +91,9 @@ export function CaptionStylePicker({ selected, onSelect, className }: CaptionSty
                 transition={{ type: 'spring', stiffness: 500, damping: 30 }}
               >
                 <Icon name="check" size="xs" color="text-white" />
-              </motion.div>
+              </MotionDiv>
             )}
-          </motion.button>
+          </MotionButton>
         );
       })}
     </div>

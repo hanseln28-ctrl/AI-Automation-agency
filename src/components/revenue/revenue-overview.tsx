@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { StatCard } from '@/components/shared/stat-card';
 import { Icon } from '@/components/shared/icon';
@@ -30,7 +30,7 @@ export function RevenueOverview({
   }).format(totalRevenue);
 
   return (
-    <motion.div variants={staggerItem}>
+    <MotionDiv variants={staggerItem}>
       <StatCard
         icon={({ className, ...props }) => <Icon name="dollar-sign" className={className} {...props} />}
         label="Total Revenue"
@@ -41,6 +41,6 @@ export function RevenueOverview({
         sparkline={<Sparkline color="#10B981" width={100} height={32} />}
         className="border-accent/10 bg-gradient-to-br from-background-card to-accent-subtle/10 shadow-glass"
       />
-    </motion.div>
+    </MotionDiv>
   );
 }

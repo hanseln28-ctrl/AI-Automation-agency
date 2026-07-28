@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Upload, Calendar, DollarSign, UserPlus } from 'lucide-react';
 import { StatCard } from '@/components/shared/stat-card';
 import { staggerItem } from '@/lib/utils/animations';
@@ -44,7 +44,7 @@ export function KpiRow() {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {KPIS.map((kpi, i) => (
-        <motion.div key={kpi.label} variants={staggerItem}>
+        <MotionDiv key={kpi.label} variants={staggerItem}>
           <StatCard
             icon={kpi.icon}
             label={kpi.label}
@@ -54,7 +54,7 @@ export function KpiRow() {
             variant={kpi.variant}
             className="h-full"
           />
-        </motion.div>
+        </MotionDiv>
       ))}
     </div>
   );

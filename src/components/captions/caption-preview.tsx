@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/shared/icon';
@@ -73,7 +73,7 @@ export function CaptionPreview({
               settings.position === 'bottom' && 'bottom-4',
             )}
           >
-            <motion.div
+            <MotionDiv
               key={activeLineIndex + settings.animation}
               initial={getAnimationInitial(settings.animation)}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -102,7 +102,7 @@ export function CaptionPreview({
               >
                 {activeLine.text}
               </span>
-            </motion.div>
+            </MotionDiv>
           </div>
         )}
 

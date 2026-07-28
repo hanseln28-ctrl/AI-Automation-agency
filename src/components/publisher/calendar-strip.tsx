@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Icon } from '@/components/shared/icon';
 import type { MockPost } from './types';
@@ -36,7 +36,7 @@ export const CalendarStrip: React.FC<CalendarStripProps> = ({
         const isSelected = isSameDay(date, selectedDate);
         const today = isToday(date);
         return (
-          <motion.button
+          <MotionButton
             key={i}
             whileTap={{ scale: 0.95 }}
             onClick={() => onSelectDate(date)}
@@ -76,7 +76,7 @@ export const CalendarStrip: React.FC<CalendarStripProps> = ({
               </div>
             )}
             {count === 0 && <div className="h-2" />}
-          </motion.button>
+          </MotionButton>
         );
       })}
     </div>

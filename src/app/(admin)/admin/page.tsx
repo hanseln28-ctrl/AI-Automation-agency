@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Users, CreditCard, DollarSign, Activity, Zap, TrendingUp } from 'lucide-react';
 import { PageHeader } from '@/components/shared/page-header';
 import { StatCard } from '@/components/shared/stat-card';
@@ -15,20 +15,20 @@ export default function AdminPage() {
   const mrr = MOCK_BILLING.filter((b) => b.status === 'active').reduce((s, b) => s + b.amount, 0);
 
   return (
-    <motion.div
+    <MotionDiv
       className="space-y-6"
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
     >
-      <motion.div variants={staggerItem}>
+      <MotionDiv variants={staggerItem}>
         <PageHeader
           title="Admin Dashboard"
           description="Platform overview and key metrics"
         />
-      </motion.div>
+      </MotionDiv>
 
-      <motion.div
+      <MotionDiv
         variants={staggerItem}
         className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
       >
@@ -64,9 +64,9 @@ export default function AdminPage() {
           trendLabel="vs last month"
           variant="warning"
         />
-      </motion.div>
+      </MotionDiv>
 
-      <motion.div variants={staggerItem} className="grid gap-6 lg:grid-cols-2">
+      <MotionDiv variants={staggerItem} className="grid gap-6 lg:grid-cols-2">
         {/* Recent Users */}
         <Card className="p-4">
           <h3 className="text-sm font-semibold text-text-primary mb-3">Recent Users</h3>
@@ -119,7 +119,7 @@ export default function AdminPage() {
             ))}
           </div>
         </Card>
-      </motion.div>
-    </motion.div>
+      </MotionDiv>
+    </MotionDiv>
   );
 }

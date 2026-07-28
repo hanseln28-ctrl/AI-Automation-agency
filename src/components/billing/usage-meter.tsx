@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Video, Send, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import type { UsageStats } from '@/lib/stripe/helpers';
@@ -41,7 +41,7 @@ function UsageBar({
 
       {isUnlimited ? (
         <div className="h-2 w-full rounded-full bg-background-surface">
-          <motion.div
+          <MotionDiv
             className="h-full rounded-full bg-accent/30"
             initial={{ width: 0 }}
             animate={{ width: '100%' }}
@@ -50,7 +50,7 @@ function UsageBar({
         </div>
       ) : (
         <div className="h-2 w-full rounded-full bg-background-surface">
-          <motion.div
+          <MotionDiv
             className={cn(
               'h-full rounded-full transition-colors',
               isOverLimit

@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Icon } from '@/components/shared/icon';
 import { Button } from '@/components/ui/button';
@@ -103,7 +103,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             const dayPosts = getPostsOnDay(day);
 
             return (
-              <motion.button
+              <MotionButton
                 key={i}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => onSelectDate(day)}
@@ -133,7 +133,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                     ))}
                   </div>
                 )}
-              </motion.button>
+              </MotionButton>
             );
           })}
         </div>

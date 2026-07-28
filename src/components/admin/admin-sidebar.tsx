@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import {
   LayoutDashboard,
   Users,
@@ -61,7 +61,7 @@ export function AdminSidebar() {
               )}
             >
               {isActive && (
-                <motion.div
+                <MotionDiv
                   layoutId="admin-active"
                   className="absolute left-0 h-6 w-0.5 rounded-r-full bg-accent"
                   transition={{ type: 'spring', stiffness: 300, damping: 30 }}

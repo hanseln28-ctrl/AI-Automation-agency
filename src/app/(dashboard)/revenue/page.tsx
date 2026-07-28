@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Calendar, DollarSign } from 'lucide-react';
 import { PageHeader } from '@/components/shared/page-header';
 import { Button } from '@/components/ui/button';
@@ -34,7 +34,7 @@ export default function RevenuePage() {
   const [currency, setCurrency] = React.useState('USD');
 
   return (
-    <motion.div
+    <MotionDiv
       className="space-y-6 animate-fade-in"
       variants={staggerContainer}
       initial="hidden"
@@ -94,6 +94,6 @@ export default function RevenuePage() {
 
       {/* Transactions Table */}
       <TransactionsTable />
-    </motion.div>
+    </MotionDiv>
   );
 }

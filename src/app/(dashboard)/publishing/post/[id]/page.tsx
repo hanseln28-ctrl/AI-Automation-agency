@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { PageHeader } from '@/components/shared/page-header';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/shared/icon';
@@ -60,7 +60,7 @@ export default function PostEditorPage() {
     : 'Edit your post details and settings.';
 
   return (
-    <motion.div
+    <MotionDiv
       className="space-y-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -103,6 +103,6 @@ export default function PostEditorPage() {
           isSaving={isSaving}
         />
       )}
-    </motion.div>
+    </MotionDiv>
   );
 }

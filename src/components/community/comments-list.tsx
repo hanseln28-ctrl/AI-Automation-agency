@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import { Search, Filter, Archive, CheckSquare, X } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { Input } from '@/components/ui/input';
@@ -120,7 +120,7 @@ export function CommentsList({
       {/* Bulk actions bar */}
       <AnimatePresence>
         {selectedIds.size > 0 && (
-          <motion.div
+          <MotionDiv
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -149,7 +149,7 @@ export function CommentsList({
                 Archive selected
               </Button>
             </div>
-          </motion.div>
+          </MotionDiv>
         )}
       </AnimatePresence>
 

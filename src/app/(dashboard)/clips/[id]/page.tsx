@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { PageHeader } from '@/components/shared/page-header';
 import { Button } from '@/components/ui/button';
@@ -26,7 +26,7 @@ export default function ClipDetailPage() {
 
   if (!clip) {
     return (
-      <motion.div
+      <MotionDiv
         className="flex flex-col items-center justify-center py-24"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -38,7 +38,7 @@ export default function ClipDetailPage() {
           <Icon name="arrow-left" size="sm" color="text-white" className="mr-2" />
           Back to Clips
         </Button>
-      </motion.div>
+      </MotionDiv>
     );
   }
 
@@ -46,7 +46,7 @@ export default function ClipDetailPage() {
   const momentConfig = MOMENT_CONFIG[clip.momentType];
 
   return (
-    <motion.div
+    <MotionDiv
       className="space-y-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -130,7 +130,7 @@ export default function ClipDetailPage() {
       <div className="space-y-4">
         <ClipTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-        <motion.div
+        <MotionDiv
           key={activeTab}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -247,8 +247,8 @@ export default function ClipDetailPage() {
               </div>
             </div>
           )}
-        </motion.div>
+        </MotionDiv>
       </div>
-    </motion.div>
+    </MotionDiv>
   );
 }

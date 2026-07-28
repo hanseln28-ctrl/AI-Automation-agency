@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Eye, Heart, Users } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { staggerContainer, staggerItem } from '@/lib/utils/animations';
@@ -125,26 +125,26 @@ function PlatformComparisonTable({ platforms }: { platforms: PlatformPerformance
 
 export function AnalyticsPlatforms() {
   return (
-    <motion.div
+    <MotionDiv
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
       className="space-y-6"
     >
       {/* Per-platform cards */}
-      <motion.div
+      <MotionDiv
         variants={staggerItem}
         className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
       >
         {MOCK_PLATFORM_DETAILS.map((detail) => (
           <PlatformCard key={detail.platform} detail={detail} />
         ))}
-      </motion.div>
+      </MotionDiv>
 
       {/* Platform comparison */}
-      <motion.div variants={staggerItem}>
+      <MotionDiv variants={staggerItem}>
         <PlatformComparisonTable platforms={MOCK_PLATFORM_PERFORMANCE} />
-      </motion.div>
-    </motion.div>
+      </MotionDiv>
+    </MotionDiv>
   );
 }

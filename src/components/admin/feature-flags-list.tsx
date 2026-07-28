@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Flag, ToggleRight, ToggleLeft, Globe, User, Percent } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { Badge } from '@/components/ui/badge';
@@ -53,7 +53,7 @@ export function FeatureFlagsList({
       ) : (
         <div className="space-y-3">
           {flags.map((flag, i) => (
-            <motion.div
+            <MotionDiv
               key={flag.id}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -143,7 +143,7 @@ export function FeatureFlagsList({
                   />
                 </div>
               </Card>
-            </motion.div>
+            </MotionDiv>
           ))}
         </div>
       )}

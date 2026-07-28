@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Icon } from '@/components/shared/icon';
 import { Badge } from '@/components/ui/badge';
@@ -60,7 +60,7 @@ export const PostCard: React.FC<PostCardProps> = ({
   const platformCfg = primaryPlatform ? PUBLISHER_PLATFORM_CONFIG[primaryPlatform] : null;
 
   return (
-    <motion.div
+    <MotionDiv
       layout
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
@@ -172,6 +172,6 @@ export const PostCard: React.FC<PostCardProps> = ({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-    </motion.div>
+    </MotionDiv>
   );
 };

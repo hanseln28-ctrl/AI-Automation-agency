@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -28,7 +28,7 @@ export function HookCard({ hook, index }: HookCardProps) {
   }
 
   return (
-    <motion.div
+    <MotionDiv
       initial={{ opacity: 0, x: -12 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.2, delay: index * 0.05 }}
@@ -72,6 +72,6 @@ export function HookCard({ hook, index }: HookCardProps) {
       <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={handleCopy}>
         <Icon name={copied ? 'check' : 'copy'} size="sm" color={copied ? 'text-success' : 'text-text-tertiary'} />
       </Button>
-    </motion.div>
+    </MotionDiv>
   );
 }

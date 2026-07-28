@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { CheckCircle, PartyPopper, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -45,7 +45,7 @@ export default function BillingSuccessPage() {
       {/* Confetti */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         {particles.map((p) => (
-          <motion.div
+          <MotionDiv
             key={p.id}
             className="absolute rounded-full"
             style={{
@@ -72,20 +72,20 @@ export default function BillingSuccessPage() {
       </div>
 
       {/* Content */}
-      <motion.div
+      <MotionDiv
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
         className="relative z-10 max-w-md text-center"
       >
-        <motion.div
+        <MotionDiv
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
           className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-success-subtle"
         >
           <CheckCircle className="h-10 w-10 text-success" />
-        </motion.div>
+        </MotionDiv>
 
         <h1 className="text-2xl font-bold text-text-primary">
           Subscription Activated!
@@ -126,7 +126,7 @@ export default function BillingSuccessPage() {
         <p className="mt-4 text-2xs text-text-tertiary">
           You&apos;ll receive a confirmation email shortly.
         </p>
-      </motion.div>
+      </MotionDiv>
     </div>
   );
 }

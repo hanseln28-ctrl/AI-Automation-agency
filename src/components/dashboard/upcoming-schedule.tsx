@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { ArrowRight, Music2, Film, Image, Globe } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils/cn';
@@ -96,7 +96,7 @@ export function UpcomingSchedule() {
         ) : (
           <div className="space-y-3">
             {SCHEDULE.map((post, i) => (
-              <motion.div
+              <MotionDiv
                 key={post.id}
                 variants={staggerItem}
                 custom={i}
@@ -138,7 +138,7 @@ export function UpcomingSchedule() {
                 >
                   {post.status}
                 </Badge>
-              </motion.div>
+              </MotionDiv>
             ))}
           </div>
         )}

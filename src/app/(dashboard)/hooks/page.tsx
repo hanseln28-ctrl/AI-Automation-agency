@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { PageHeader } from '@/components/shared/page-header';
 import { Icon } from '@/components/shared/icon';
 import { HookInput } from '@/components/hooks/hook-input';
@@ -42,7 +42,7 @@ export default function HooksPage() {
   }
 
   return (
-    <motion.div
+    <MotionDiv
       className="space-y-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -75,12 +75,12 @@ export default function HooksPage() {
         <div className="lg:col-span-3">
           {isGenerating && !result && (
             <div className="flex flex-col items-center justify-center py-16 rounded-xl border border-border-subtle bg-background-card">
-              <motion.div
+              <MotionDiv
                 animate={{ rotate: 360 }}
                 transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
               >
                 <Icon name="loader-2" size="xl" color="text-accent" />
-              </motion.div>
+              </MotionDiv>
               <p className="mt-4 text-sm font-medium text-text-primary">Generating hooks...</p>
               <p className="mt-1 text-xs text-text-tertiary">Analyzing clip content and optimizing for engagement</p>
             </div>
@@ -107,6 +107,6 @@ export default function HooksPage() {
           )}
         </div>
       </div>
-    </motion.div>
+    </MotionDiv>
   );
 }

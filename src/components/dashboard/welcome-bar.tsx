@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { CalendarDays, Sparkles, Lightbulb } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { staggerItem } from '@/lib/utils/animations';
@@ -45,7 +45,7 @@ export function WelcomeBar({ userName }: WelcomeBarProps) {
   });
 
   return (
-    <motion.div
+    <MotionDiv
       variants={staggerItem}
       className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
     >
@@ -66,7 +66,7 @@ export function WelcomeBar({ userName }: WelcomeBarProps) {
       </div>
 
       {/* Rotating AI Tip */}
-      <motion.div
+      <MotionDiv
         key={tipIndex}
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -90,7 +90,7 @@ export function WelcomeBar({ userName }: WelcomeBarProps) {
             {TIPS[tipIndex]}
           </p>
         </div>
-      </motion.div>
-    </motion.div>
+      </MotionDiv>
+    </MotionDiv>
   );
 }

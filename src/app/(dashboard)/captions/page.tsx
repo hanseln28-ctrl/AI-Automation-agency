@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { PageHeader } from '@/components/shared/page-header';
 import { Button } from '@/components/ui/button';
@@ -75,7 +75,7 @@ export default function CaptionsPage() {
 
   if (MOCK_CAPTION_PROJECTS.length === 0) {
     return (
-      <motion.div
+      <MotionDiv
         className="flex flex-col items-center justify-center py-24"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -91,12 +91,12 @@ export default function CaptionsPage() {
           <Icon name="sparkles" size="sm" color="text-white" className="mr-2" />
           Go to Clips
         </Button>
-      </motion.div>
+      </MotionDiv>
     );
   }
 
   return (
-    <motion.div
+    <MotionDiv
       className="space-y-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -189,7 +189,7 @@ export default function CaptionsPage() {
           </AnimatePresence>
         </div>
       )}
-    </motion.div>
+    </MotionDiv>
   );
 }
 
@@ -213,7 +213,7 @@ function CaptionCard({
   const styleConfig = CAPTION_STYLE_CONFIGS.find((s) => s.key === project.style);
 
   return (
-    <motion.div
+    <MotionDiv
       layout
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
@@ -289,6 +289,6 @@ function CaptionCard({
           </span>
         </div>
       </div>
-    </motion.div>
+    </MotionDiv>
   );
 }

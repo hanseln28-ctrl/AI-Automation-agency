@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/shared/icon';
@@ -66,7 +66,7 @@ export function HookResults({ result, onRegenerate, isRegenerating, className }:
 
       {/* Tab content */}
       <AnimatePresence mode="wait">
-        <motion.div
+        <MotionDiv
           key={activeTab}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -78,7 +78,7 @@ export function HookResults({ result, onRegenerate, isRegenerating, className }:
           {activeTab === 'descriptions' && <DescriptionsTab descriptions={result.descriptions} />}
           {activeTab === 'hashtags' && <HashtagCloud hashtags={result.hashtags} />}
           {activeTab === 'seo' && <SEOKeywords keywords={result.seoKeywords} />}
-        </motion.div>
+        </MotionDiv>
       </AnimatePresence>
     </div>
   );
@@ -154,7 +154,7 @@ function DescriptionsTab({ descriptions }: { descriptions: HookGenerationResult[
         {descriptions.map((desc, i) => {
           const isExpanded = expandedId === desc.id;
           return (
-            <motion.div
+            <MotionDiv
               key={desc.id}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -201,7 +201,7 @@ function DescriptionsTab({ descriptions }: { descriptions: HookGenerationResult[
                   {desc.text}
                 </p>
               </div>
-            </motion.div>
+            </MotionDiv>
           );
         })}
       </div>

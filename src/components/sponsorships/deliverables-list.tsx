@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Check, Clock, AlertTriangle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Icon } from '@/components/shared/icon';
@@ -24,7 +24,7 @@ const statusIcons: Record<string, React.ReactNode> = {
 
 export function DeliverablesList({ deliverables, className }: DeliverablesListProps) {
   return (
-    <motion.div
+    <MotionDiv
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
@@ -39,7 +39,7 @@ export function DeliverablesList({ deliverables, className }: DeliverablesListPr
           const isComplete = deliverable.status === 'completed';
 
           return (
-            <motion.div
+            <MotionDiv
               key={deliverable.id}
               variants={staggerItem}
               className={cn(
@@ -93,10 +93,10 @@ export function DeliverablesList({ deliverables, className }: DeliverablesListPr
               <Badge variant={statusConfig.variant} className="shrink-0">
                 {statusConfig.label}
               </Badge>
-            </motion.div>
+            </MotionDiv>
           );
         })}
       )}
-    </motion.div>
+    </MotionDiv>
   );
 }

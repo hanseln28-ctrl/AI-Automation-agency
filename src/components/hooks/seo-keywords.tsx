@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/shared/icon';
@@ -51,7 +51,7 @@ export function SEOKeywords({ keywords, className }: SEOKeywordsProps) {
 
       <div className="space-y-2">
         {keywords.map((kw, i) => (
-          <motion.div
+          <MotionDiv
             key={kw.keyword}
             initial={{ opacity: 0, x: -8 }}
             animate={{ opacity: 1, x: 0 }}
@@ -90,7 +90,7 @@ export function SEOKeywords({ keywords, className }: SEOKeywordsProps) {
             >
               <Icon name="copy" size="xs" color="text-text-tertiary" />
             </button>
-          </motion.div>
+          </MotionDiv>
         ))}
       </div>
     </div>

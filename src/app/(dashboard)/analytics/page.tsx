@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Calendar } from 'lucide-react';
 import { PageHeader } from '@/components/shared/page-header';
 import { Button } from '@/components/ui/button';
@@ -25,7 +25,7 @@ export default function AnalyticsPage() {
   const [dateRange, setDateRange] = React.useState<DateRange>('30d');
 
   return (
-    <motion.div
+    <MotionDiv
       className="space-y-6 animate-fade-in"
       variants={staggerContainer}
       initial="hidden"
@@ -86,6 +86,6 @@ export default function AnalyticsPage() {
           <AnalyticsPlatforms />
         </TabsContent>
       </Tabs>
-    </motion.div>
+    </MotionDiv>
   );
 }

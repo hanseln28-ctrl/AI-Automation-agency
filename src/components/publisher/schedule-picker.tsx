@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Icon } from '@/components/shared/icon';
 import { Button } from '@/components/ui/button';
@@ -96,7 +96,7 @@ export const SchedulePicker: React.FC<SchedulePickerProps> = ({
               {next7.map((date, i) => {
                 const isSelected = selectedDate && isSameDay(date, selectedDate);
                 return (
-                  <motion.button
+                  <MotionButton
                     key={i}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => handleDateSelect(date)}
@@ -112,7 +112,7 @@ export const SchedulePicker: React.FC<SchedulePickerProps> = ({
                     </span>
                     <span className="text-sm font-bold">{format(date, 'd')}</span>
                     <span className="text-2xs">{format(date, 'MMM')}</span>
-                  </motion.button>
+                  </MotionButton>
                 );
               })}
             </div>

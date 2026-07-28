@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/shared/icon';
@@ -124,7 +124,7 @@ export function HookInput({
       </button>
 
       {showAdvanced && (
-        <motion.div
+        <MotionDiv
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
@@ -157,7 +157,7 @@ export function HookInput({
               })}
             </div>
           </div>
-        </motion.div>
+        </MotionDiv>
       )}
 
       {/* Generate button */}

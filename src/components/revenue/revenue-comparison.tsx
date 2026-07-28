@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { staggerItem } from '@/lib/utils/animations';
 import { MOCK_MONTHLY_COMPARISON, MOCK_REVENUE_OVER_TIME } from './mock-data';
@@ -27,7 +27,7 @@ export function RevenueComparison() {
   const totalPrevious = categories.reduce((s, c) => s + c.previous, 0);
 
   return (
-    <motion.div variants={staggerItem} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <MotionDiv variants={staggerItem} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {/* Total comparison */}
       <Card className="sm:col-span-2 lg:col-span-1">
         <CardHeader>
@@ -94,6 +94,6 @@ export function RevenueComparison() {
           </Card>
         );
       })}
-    </motion.div>
+    </MotionDiv>
   );
 }

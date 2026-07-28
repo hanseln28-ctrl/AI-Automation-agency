@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { slideRight, slideLeft } from '@/lib/utils/animations';
 
@@ -39,7 +39,7 @@ export function ImportTabs({ activeTab, onTabChange }: ImportTabsProps) {
 
       {/* Tab Content with animation */}
       <AnimatePresence mode="wait">
-        <motion.div
+        <MotionDiv
           key={activeTab}
           variants={activeTab === 'connect' ? slideRight : slideLeft}
           initial="hidden"
@@ -48,7 +48,7 @@ export function ImportTabs({ activeTab, onTabChange }: ImportTabsProps) {
           className="min-h-[400px]"
         >
           {/* Content is rendered by parent */}
-        </motion.div>
+        </MotionDiv>
       </AnimatePresence>
     </div>
   );

@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Icon } from '@/components/shared/icon';
 import { Button } from '@/components/ui/button';
@@ -76,7 +76,7 @@ export const FailedPosts: React.FC<FailedPostsProps> = ({
           const platformCfg = primaryPlatform ? PUBLISHER_PLATFORM_CONFIG[primaryPlatform] : null;
 
           return (
-            <motion.div
+            <MotionDiv
               key={post.id}
               layout
               initial={{ opacity: 0, y: 8 }}
@@ -136,7 +136,7 @@ export const FailedPosts: React.FC<FailedPostsProps> = ({
                   </Button>
                 </div>
               </div>
-            </motion.div>
+            </MotionDiv>
           );
         })}
       </AnimatePresence>

@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Icon } from '@/components/shared/icon';
 import type { PublisherPlatform } from './types';
@@ -40,7 +40,7 @@ export const PostPreview: React.FC<PostPreviewProps> = ({
   const displayHashtags = hashtags.length > 0 ? hashtags.join(' ') : '';
 
   return (
-    <motion.div
+    <MotionDiv
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       className={cn(
@@ -93,6 +93,6 @@ export const PostPreview: React.FC<PostPreviewProps> = ({
           <Icon name="share-2" size="xs" color="text-text-tertiary" /> 0
         </span>
       </div>
-    </motion.div>
+    </MotionDiv>
   );
 };

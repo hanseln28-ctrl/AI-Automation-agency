@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Play, Eye, Heart, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils/cn';
@@ -81,7 +81,7 @@ export function TopClips() {
       </CardHeader>
       <CardContent className="space-y-3">
         {TOP_CLIPS.map((clip, i) => (
-          <motion.div
+          <MotionDiv
             key={clip.id}
             variants={staggerItem}
             custom={i}
@@ -132,7 +132,7 @@ export function TopClips() {
                 </span>
               </div>
             </div>
-          </motion.div>
+          </MotionDiv>
         ))}
       </CardContent>
     </Card>

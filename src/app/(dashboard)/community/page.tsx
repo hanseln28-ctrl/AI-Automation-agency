@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import { MessageSquare, MessageCircle, Server, Shield, Settings, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -216,14 +216,14 @@ export default function CommunityPage() {
   };
 
   return (
-    <motion.div
+    <MotionDiv
       className="animate-fade-in space-y-6"
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
     >
       {/* Header */}
-      <motion.div variants={staggerItem}>
+      <MotionDiv variants={staggerItem}>
         <PageHeader
           title="Community"
           description="Unified inbox for messages across all your platforms"
@@ -245,20 +245,20 @@ export default function CommunityPage() {
             </div>
           }
         />
-      </motion.div>
+      </MotionDiv>
 
       {/* Quick Stats */}
-      <motion.div variants={staggerItem}>
+      <MotionDiv variants={staggerItem}>
         <CommunityStats
           stats={{
             unreadCount,
             pendingModeration,
           }}
         />
-      </motion.div>
+      </MotionDiv>
 
       {/* Tabs */}
-      <motion.div variants={staggerItem}>
+      <MotionDiv variants={staggerItem}>
         <Tabs defaultValue="comments" className="space-y-6">
           <TabsList>
             <TabsTrigger value="comments" className="gap-1.5">
@@ -334,12 +334,12 @@ export default function CommunityPage() {
             <ModerationLog entries={moderationLog} />
           </TabsContent>
         </Tabs>
-      </motion.div>
+      </MotionDiv>
 
       {/* Auto-Replies section (toggled) */}
       <AnimatePresence>
         {showAutoReplies && (
-          <motion.div
+          <MotionDiv
             variants={fadeIn}
             initial="hidden"
             animate="visible"
@@ -352,9 +352,9 @@ export default function CommunityPage() {
               onDelete={handleDeleteRule}
               onCreate={handleCreateRule}
             />
-          </motion.div>
+          </MotionDiv>
         )}
       </AnimatePresence>
-    </motion.div>
+    </MotionDiv>
   );
 }

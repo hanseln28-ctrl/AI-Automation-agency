@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import { Shield, CheckCircle2, XCircle, Ban, EyeOff } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { Badge } from '@/components/ui/badge';
@@ -51,7 +51,7 @@ export function ModerationQueue({
             {items.map((item, i) => {
               const platformCfg = PLATFORM_CONFIG[item.platform as CommunityPlatform];
               return (
-                <motion.div
+                <MotionDiv
                   key={item.id}
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -134,7 +134,7 @@ export function ModerationQueue({
                       </div>
                     </div>
                   </Card>
-                </motion.div>
+                </MotionDiv>
               );
             })}
           </AnimatePresence>

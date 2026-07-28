@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { ArrowUpDown } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -38,14 +38,14 @@ export function AnalyticsContent() {
   };
 
   return (
-    <motion.div
+    <MotionDiv
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
       className="space-y-6"
     >
       {/* Clip Performance Grid */}
-      <motion.div variants={staggerItem}>
+      <MotionDiv variants={staggerItem}>
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -104,10 +104,10 @@ export function AnalyticsContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </MotionDiv>
 
       {/* Best Posting Times Heatmap + Content Type Breakdown */}
-      <motion.div variants={staggerItem} className="grid gap-6 lg:grid-cols-5">
+      <MotionDiv variants={staggerItem} className="grid gap-6 lg:grid-cols-5">
         <Card className="lg:col-span-3">
           <CardHeader>
             <CardTitle>Best Posting Times</CardTitle>
@@ -133,7 +133,7 @@ export function AnalyticsContent() {
             />
           </CardContent>
         </Card>
-      </motion.div>
-    </motion.div>
+      </MotionDiv>
+    </MotionDiv>
   );
 }

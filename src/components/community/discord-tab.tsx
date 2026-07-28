@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import {
   Server,
   Users,
@@ -51,7 +51,7 @@ export function DiscordTab({
         <h3 className="mb-3 text-sm font-semibold text-text-primary">Connected Servers</h3>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {servers.map((server, i) => (
-            <motion.div
+            <MotionDiv
               key={server.id}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -103,7 +103,7 @@ export function DiscordTab({
                   </div>
                 </div>
               </Card>
-            </motion.div>
+            </MotionDiv>
           ))}
         </div>
       </div>

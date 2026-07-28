@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import {
   Bell,
   CheckCircle2,
@@ -123,7 +123,7 @@ export function NotificationsPanel() {
           <div className="space-y-2">
             <AnimatePresence>
               {notifications.map((notif, i) => (
-                <motion.div
+                <MotionDiv
                   key={notif.id}
                   variants={staggerItem}
                   custom={i}
@@ -177,7 +177,7 @@ export function NotificationsPanel() {
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
-                </motion.div>
+                </MotionDiv>
               ))}
             </AnimatePresence>
           </div>

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import {
   MoreHorizontal,
   Eye,
@@ -123,7 +123,7 @@ export function StreamList() {
                 <tbody className="divide-y divide-border-subtle">
                   <AnimatePresence mode="popLayout">
                     {filtered.map((stream, idx) => (
-                      <motion.tr
+                      <MotionTr
                         key={stream.id}
                         layout
                         initial={{ opacity: 0, y: 8 }}
@@ -236,7 +236,7 @@ export function StreamList() {
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </td>
-                      </motion.tr>
+                      </MotionTr>
                     ))}
                   </AnimatePresence>
                 </tbody>

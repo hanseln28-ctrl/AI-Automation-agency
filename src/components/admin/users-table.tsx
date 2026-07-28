@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { useRouter } from 'next/navigation';
 import {
   Search,
@@ -135,7 +135,7 @@ export function UsersTable({ users, onView, onEdit, onSuspend, onDelete }: Users
             <tbody>
               {filtered.map((user, i) => (
                 <React.Fragment key={user.id}>
-                  <motion.tr
+                  <MotionTr
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.15, delay: i * 0.02 }}
@@ -234,7 +234,7 @@ export function UsersTable({ users, onView, onEdit, onSuspend, onDelete }: Users
                         </DropdownMenu>
                       </div>
                     </td>
-                  </motion.tr>
+                  </MotionTr>
 
                   {/* Expanded detail row */}
                   {expandedUserId === user.id && (

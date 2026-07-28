@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Zap, BarChart3, TrendingUp, DollarSign } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { Card } from '@/components/ui/card';
@@ -60,7 +60,7 @@ export function AIUsageDashboard({ records }: AIUsageDashboardProps) {
           {Array.from({ length: 30 }).map((_, i) => {
             const val = 20 + Math.random() * 80;
             return (
-              <motion.div
+              <MotionDiv
                 key={i}
                 className="flex-1 rounded-t-sm bg-accent/50"
                 initial={{ height: 0 }}
@@ -110,7 +110,7 @@ export function AIUsageDashboard({ records }: AIUsageDashboardProps) {
               </thead>
               <tbody>
                 {records.map((rec, i) => (
-                  <motion.tr
+                  <MotionTr
                     key={rec.id}
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -144,7 +144,7 @@ export function AIUsageDashboard({ records }: AIUsageDashboardProps) {
                         ${rec.cost.toFixed(2)}
                       </span>
                     </td>
-                  </motion.tr>
+                  </MotionTr>
                 ))}
               </tbody>
             </table>

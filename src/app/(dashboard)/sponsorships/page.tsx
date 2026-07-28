@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Plus, Clock, ChevronDown, ChevronUp } from 'lucide-react';
 import Link from 'next/link';
 import { PageHeader } from '@/components/shared/page-header';
@@ -34,7 +34,7 @@ export default function SponsorshipsPage() {
   }, [activeCampaigns]);
 
   return (
-    <motion.div
+    <MotionDiv
       className="space-y-6 animate-fade-in"
       variants={staggerContainer}
       initial="hidden"
@@ -54,7 +54,7 @@ export default function SponsorshipsPage() {
       />
 
       {/* Active Campaigns */}
-      <motion.div variants={staggerItem}>
+      <MotionDiv variants={staggerItem}>
         <h2 className="mb-4 text-lg font-semibold text-text-primary">Active Campaigns</h2>
         {activeCampaigns.length === 0 ? (
           <Card>
@@ -69,11 +69,11 @@ export default function SponsorshipsPage() {
             ))}
           </div>
         )}
-      </motion.div>
+      </MotionDiv>
 
       {/* Upcoming Deliverables */}
       {upcomingDeliverables.length > 0 && (
-        <motion.div variants={staggerItem}>
+        <MotionDiv variants={staggerItem}>
           <Card>
             <CardHeader>
               <CardTitle>Upcoming Deliverables</CardTitle>
@@ -103,11 +103,11 @@ export default function SponsorshipsPage() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </MotionDiv>
       )}
 
       {/* Past Campaigns */}
-      <motion.div variants={staggerItem}>
+      <MotionDiv variants={staggerItem}>
         <button
           onClick={() => setShowPast(!showPast)}
           className="mb-4 flex items-center gap-2 text-lg font-semibold text-text-primary hover:text-accent transition-colors"
@@ -130,7 +130,7 @@ export default function SponsorshipsPage() {
             )}
           </div>
         )}
-      </motion.div>
-    </motion.div>
+      </MotionDiv>
+    </MotionDiv>
   );
 }

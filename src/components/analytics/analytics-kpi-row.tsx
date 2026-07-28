@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { StatCard } from '@/components/shared/stat-card';
 import { Icon, type IconName } from '@/components/shared/icon';
 import { staggerItem } from '@/lib/utils/animations';
@@ -24,7 +24,7 @@ export function AnalyticsKpiRow({ kpis = MOCK_KPIS }: AnalyticsKpiRowProps) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
       {kpis.map((kpi) => (
-        <motion.div key={kpi.label} variants={staggerItem}>
+        <MotionDiv key={kpi.label} variants={staggerItem}>
           <StatCard
             icon={({ className, ...props }) => <Icon name={kpi.icon as IconName} className={className} {...props} />}
             label={kpi.label}
@@ -35,7 +35,7 @@ export function AnalyticsKpiRow({ kpis = MOCK_KPIS }: AnalyticsKpiRowProps) {
             sparkline={<Sparkline color={sparklineColors[kpi.variant]} />}
             className="h-full"
           />
-        </motion.div>
+        </MotionDiv>
       ))}
     </div>
   );

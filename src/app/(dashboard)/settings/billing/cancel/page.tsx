@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { useRouter } from 'next/navigation';
 import { XCircle, ArrowLeft, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,20 +11,20 @@ export default function BillingCancelPage() {
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center">
-      <motion.div
+      <MotionDiv
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
         className="max-w-md text-center"
       >
-        <motion.div
+        <MotionDiv
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
           className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-background-elevated"
         >
           <XCircle className="h-10 w-10 text-text-tertiary" />
-        </motion.div>
+        </MotionDiv>
 
         <h1 className="text-2xl font-bold text-text-primary">
           Checkout Cancelled
@@ -49,7 +49,7 @@ export default function BillingCancelPage() {
             Try Again
           </Button>
         </div>
-      </motion.div>
+      </MotionDiv>
     </div>
   );
 }

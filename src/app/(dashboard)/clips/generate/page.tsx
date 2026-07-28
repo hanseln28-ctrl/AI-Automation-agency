@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { PageHeader } from '@/components/shared/page-header';
 import { Button } from '@/components/ui/button';
@@ -81,7 +81,7 @@ export default function GenerateClipsPage() {
   const selectedMoment = moments.find((m) => m.id === selectedMomentId);
 
   return (
-    <motion.div
+    <MotionDiv
       className="space-y-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -102,7 +102,7 @@ export default function GenerateClipsPage() {
 
       {/* Phase: Select Stream */}
       {phase === 'select' && (
-        <motion.div
+        <MotionDiv
           className="max-w-lg mx-auto space-y-6"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -146,12 +146,12 @@ export default function GenerateClipsPage() {
               Start Analysis
             </Button>
           </div>
-        </motion.div>
+        </MotionDiv>
       )}
 
       {/* Phase: Analyzing */}
       {phase === 'analyzing' && (
-        <motion.div
+        <MotionDiv
           className="max-w-lg mx-auto"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -171,7 +171,7 @@ export default function GenerateClipsPage() {
 
             <GeneratePipeline currentStage={pipelineStage} />
           </div>
-        </motion.div>
+        </MotionDiv>
       )}
 
       {/* Phase: Results */}
@@ -219,7 +219,7 @@ export default function GenerateClipsPage() {
           {/* Side panel: Selected moment details */}
           <div className="lg:col-span-1 space-y-4">
             {selectedMoment ? (
-              <motion.div
+              <MotionDiv
                 className="rounded-xl border border-border-subtle bg-background-card p-4 space-y-4 sticky top-4"
                 initial={{ opacity: 0, x: 12 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -293,7 +293,7 @@ export default function GenerateClipsPage() {
                   <Icon name="sparkles" size="sm" color="text-white" className="mr-2" />
                   Generate {selectedCount} Selected Clip{selectedCount !== 1 ? 's' : ''}
                 </Button>
-              </motion.div>
+              </MotionDiv>
             ) : (
               <div className="rounded-xl border border-border-subtle bg-background-card p-6 text-center">
                 <p className="text-sm text-text-tertiary">
@@ -307,7 +307,7 @@ export default function GenerateClipsPage() {
 
       {/* Phase: Generating */}
       {phase === 'generating' && (
-        <motion.div
+        <MotionDiv
           className="max-w-lg mx-auto"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -329,8 +329,8 @@ export default function GenerateClipsPage() {
 
             <GeneratePipeline currentStage={pipelineStage} />
           </div>
-        </motion.div>
+        </MotionDiv>
       )}
-    </motion.div>
+    </MotionDiv>
   );
 }

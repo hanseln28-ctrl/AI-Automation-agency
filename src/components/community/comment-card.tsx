@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Heart, Reply, Flag, Archive, MoreHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { Badge } from '@/components/ui/badge';
@@ -44,7 +44,7 @@ export function CommentCard({
   const timeAgo = formatTimeAgo(comment.timestamp);
 
   return (
-    <motion.div
+    <MotionDiv
       layout
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
@@ -169,7 +169,7 @@ export function CommentCard({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-    </motion.div>
+    </MotionDiv>
   );
 }
 

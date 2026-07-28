@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Eye, MousePointerClick, TrendingUp, DollarSign } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { staggerContainer, staggerItem } from '@/lib/utils/animations';
@@ -35,14 +35,14 @@ export function CampaignPerformanceView({ performances }: CampaignPerformancePro
   const avgCtr = (totals.ctr / performances.length).toFixed(1);
 
   return (
-    <motion.div
+    <MotionDiv
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
       className="space-y-6"
     >
       {/* Summary KPI cards */}
-      <motion.div
+      <MotionDiv
         variants={staggerItem}
         className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
       >
@@ -93,10 +93,10 @@ export function CampaignPerformanceView({ performances }: CampaignPerformancePro
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </MotionDiv>
 
       {/* Per-deliverable table */}
-      <motion.div variants={staggerItem}>
+      <MotionDiv variants={staggerItem}>
         <Card>
           <CardHeader>
             <CardTitle>Deliverable Performance</CardTitle>
@@ -131,7 +131,7 @@ export function CampaignPerformanceView({ performances }: CampaignPerformancePro
             </div>
           </CardContent>
         </Card>
-      </motion.div>
-    </motion.div>
+      </MotionDiv>
+    </MotionDiv>
   );
 }

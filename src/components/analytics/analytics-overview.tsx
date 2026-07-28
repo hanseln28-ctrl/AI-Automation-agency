@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { staggerContainer, staggerItem } from '@/lib/utils/animations';
 import { ChartPlaceholder } from './chart-placeholder';
@@ -9,14 +9,14 @@ import { MOCK_VIEWS_OVER_TIME, MOCK_TOP_CLIPS, MOCK_PLATFORM_PERFORMANCE } from 
 
 export function AnalyticsOverview() {
   return (
-    <motion.div
+    <MotionDiv
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
       className="space-y-6"
     >
       {/* Views Over Time */}
-      <motion.div variants={staggerItem}>
+      <MotionDiv variants={staggerItem}>
         <Card>
           <CardHeader>
             <CardTitle>Views Over Time</CardTitle>
@@ -25,10 +25,10 @@ export function AnalyticsOverview() {
             <ChartPlaceholder type="area" height={280} />
           </CardContent>
         </Card>
-      </motion.div>
+      </MotionDiv>
 
       {/* Watch Time Trend + Performance by Platform */}
-      <motion.div variants={staggerItem} className="grid gap-6 lg:grid-cols-2">
+      <MotionDiv variants={staggerItem} className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Watch Time Trend</CardTitle>
@@ -54,10 +54,10 @@ export function AnalyticsOverview() {
             />
           </CardContent>
         </Card>
-      </motion.div>
+      </MotionDiv>
 
       {/* Top Performing Clips */}
-      <motion.div variants={staggerItem}>
+      <MotionDiv variants={staggerItem}>
         <Card>
           <CardHeader>
             <CardTitle>Top Performing Clips</CardTitle>
@@ -106,7 +106,7 @@ export function AnalyticsOverview() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
-    </motion.div>
+      </MotionDiv>
+    </MotionDiv>
   );
 }

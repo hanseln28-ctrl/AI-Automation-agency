@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Check, Loader2, XCircle } from 'lucide-react';
 import { PROCESSING_STAGES } from './types';
@@ -63,7 +63,7 @@ export function StatusPipeline({ currentStatus }: StatusPipelineProps) {
               >
                 {/* Dot */}
                 <div className="relative z-10 flex-shrink-0">
-                  <motion.div
+                  <MotionDiv
                     animate={
                       isCurrent
                         ? {
@@ -88,17 +88,17 @@ export function StatusPipeline({ currentStatus }: StatusPipelineProps) {
                   >
                     {isComplete && <Check className="h-4 w-4 text-white" />}
                     {isCurrent && (
-                      <motion.div
+                      <MotionDiv
                         animate={{ rotate: 360 }}
                         transition={{ repeat: Infinity, duration: 1.5, ease: 'linear' }}
                       >
                         <Loader2 className="h-4 w-4 text-accent" />
-                      </motion.div>
+                      </MotionDiv>
                     )}
                     {isFailed && stage.key === 'importing' && (
                       <XCircle className="h-4 w-4 text-danger" />
                     )}
-                  </motion.div>
+                  </MotionDiv>
                 </div>
 
                 {/* Label */}

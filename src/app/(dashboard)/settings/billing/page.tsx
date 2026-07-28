@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { PageHeader } from '@/components/shared/page-header';
@@ -52,7 +52,7 @@ export default function BillingPage() {
   };
 
   return (
-    <motion.div
+    <MotionDiv
       className="space-y-8 animate-fade-in"
       variants={staggerContainer}
       initial="hidden"
@@ -158,6 +158,6 @@ export default function BillingPage() {
           </p>
         )}
       </section>
-    </motion.div>
+    </MotionDiv>
   );
 }

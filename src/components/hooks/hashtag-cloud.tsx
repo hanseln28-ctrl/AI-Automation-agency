@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -73,7 +73,7 @@ export function HashtagCloud({ hashtags, className }: HashtagCloudProps) {
       {/* Hashtag cloud — visual tag display */}
       <div className="flex flex-wrap gap-2">
         {filtered.map((tag, i) => (
-          <motion.span
+          <MotionSpan
             key={tag.text}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -91,7 +91,7 @@ export function HashtagCloud({ hashtags, className }: HashtagCloudProps) {
             {tag.volume === 'high' && (
               <span className="ml-1 text-2xs opacity-70">↑</span>
             )}
-          </motion.span>
+          </MotionSpan>
         ))}
       </div>
 

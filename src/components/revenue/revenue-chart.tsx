@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP } from '@/components/shared/motion';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { staggerItem } from '@/lib/utils/animations';
 import { ChartPlaceholder } from '@/components/analytics/chart-placeholder';
@@ -15,7 +15,7 @@ interface RevenueChartProps {
 
 export function RevenueChart({ data = MOCK_REVENUE_OVER_TIME }: RevenueChartProps) {
   return (
-    <motion.div variants={staggerItem} className="space-y-6">
+    <MotionDiv variants={staggerItem} className="space-y-6">
       {/* Revenue over time */}
       <Card>
         <CardHeader>
@@ -64,6 +64,6 @@ export function RevenueChart({ data = MOCK_REVENUE_OVER_TIME }: RevenueChartProp
           </div>
         </CardContent>
       </Card>
-    </motion.div>
+    </MotionDiv>
   );
 }
