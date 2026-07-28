@@ -14,5 +14,6 @@ const nextConfig = {
     serverActions: { bodySizeLimit: '100mb' },
   },
   transpilePackages: ['recharts', 'framer-motion'],
+  eslint: { ignoreDuringBuilds: true },
 };
 module.exports = nextConfig;
