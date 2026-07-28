@@ -34,7 +34,7 @@ const nextConfig = {
     },
   },
   // Allow video processing imports
-  transpilePackages: ['recharts'],
+  transpilePackages: ['recharts', 'framer-motion'],
 };
 
 module.exports = nextConfig;
