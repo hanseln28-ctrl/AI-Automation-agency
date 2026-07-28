@@ -248,6 +248,7 @@ model Caption {
   content      String?
   isBurnedIn   Boolean  @default(false) @map("is_burned_in")
   burnedVideoUrl String? @map("burned_video_url")
+  status       String   @default("queued")
   wordCount    Int?     @map("word_count")
   aiModel      String?  @map("ai_model")
   createdAt    DateTime @default(now()) @map("created_at")
