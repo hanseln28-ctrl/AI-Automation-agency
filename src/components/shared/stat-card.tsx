@@ -2,11 +2,11 @@
 
 import * as React from 'react';
 import { cn } from '@/lib/utils/cn';
-import { ArrowUpRight, ArrowDownRight, type LucideIcon } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
 interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Icon component from lucide-react */
-  icon?: LucideIcon;
+  /** Icon component */
+  icon?: React.ComponentType<{ className?: string }>;
   /** Stat label (e.g. "Total Views") */
   label: string;
   /** Stat value (e.g. "125,000") */
