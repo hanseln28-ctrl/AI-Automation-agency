@@ -118,7 +118,7 @@ export async function GET(request: NextRequest) {
           if (!platformBreakdown[post.platform]) {
             platformBreakdown[post.platform] = { views: 0, engagementRate: 0 };
           }
-          platformBreakdown[post.platform].views += Number(clip.totalViews);
+          platformBreakdown[post.platform]!.views += Number(clip.totalViews);
         }
       }
     }
