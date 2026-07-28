@@ -20,7 +20,7 @@ function useConfetti() {
     const newParticles = Array.from({ length: 60 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      color: COLORS[Math.floor(Math.random() * COLORS.length)] ?? "#6C5CE7",
       size: Math.random() * 8 + 4,
       delay: Math.random() * 0.8,
       duration: Math.random() * 1.5 + 2,
