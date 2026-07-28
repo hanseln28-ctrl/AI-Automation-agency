@@ -45,6 +45,11 @@ model User {
   aiUsage           AiUsage[]
   teamMemberships   TeamMember[]
   autoReplyRules    AutoReplyRule[]
+  teamsOwned        Team[]
+  scheduledPosts    ScheduledPost[]
+  analyticsRollups  AnalyticsDailyRollup[]
+  campaigns         Campaign[]
+  replyTemplates    CommunityReplyTemplate[]
 
   @@map("users")
 }
@@ -72,6 +77,7 @@ model Team {
   apiKeys     ApiKey[]
   campaigns   Campaign[]
   revenueSources RevenueSource[]
+  replyTemplates CommunityReplyTemplate[]
 
   @@index([ownerUserId])
   @@map("teams")
@@ -121,6 +127,7 @@ model SocialAccount {
   user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   team           Team?            @relation(fields: [teamId], references: [id])
   scheduledPosts ScheduledPost[]
+  communityMessages CommunityMessage[]
 
   @@unique([userId, platform, platformUserId])
   @@index([userId])
@@ -166,6 +173,7 @@ model Stream {
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   team  Team? @relation(fields: [teamId], references: [id])
   clips Clip[]
+  aiUsages AiUsage[]
 
   @@index([userId])
   @@index([status])
@@ -219,6 +227,7 @@ model Clip {
   sponsorships     Sponsorship[]
   revenueSources   RevenueSource[]
   aiUsage          AiUsage[]
+  deliverables     Deliverable[]
 
   @@index([userId])
   @@index([streamId])
@@ -319,6 +328,7 @@ model ScheduledPost {
   user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   socialAccount SocialAccount @relation(fields: [socialAccountId], references: [id], onDelete: Cascade)
   analyticsEvents AnalyticsEvent[]
+  revenueSources RevenueSource[]
 
   @@index([userId])
   @@index([clipId])
@@ -600,8 +610,8 @@ model AiUsage {
   stream Stream? @relation(fields: [streamId], references: [id])
   clip   Clip?   @relation(fields: [clipId], references: [id])
 
-  @@index([userId, createdAt])
-  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, createdAt], map: "ai_usage_user_id_created_at_idx")
+  @@index([userId, createdAt(sort: Desc)], map: "ai_usage_user_id_created_at_desc_idx")
   @@map("ai_usage")
 }
 
