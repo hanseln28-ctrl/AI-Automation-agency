@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // GET /api/streams/[id] — Get stream details
 // PATCH /api/streams/[id] — Update stream metadata
 // DELETE /api/streams/[id] — Soft-delete stream

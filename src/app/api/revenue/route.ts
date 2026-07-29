@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // GET /api/revenue — List revenue sources
 // POST /api/revenue — Record manual revenue
 

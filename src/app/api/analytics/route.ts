@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // GET /api/analytics — Aggregate analytics data
 
 import { NextRequest, NextResponse } from 'next/server';

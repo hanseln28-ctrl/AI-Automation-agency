@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // GET /api/sponsorships — List sponsorship campaigns
 // POST /api/sponsorships — Create sponsorship campaign
 

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // GET /api/clips/[id] — Get clip details
 // PATCH /api/clips/[id] — Update clip metadata
 // DELETE /api/clips/[id] — Soft-delete clip

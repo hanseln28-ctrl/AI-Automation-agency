@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // GET /api/streams — List user's streams
 // POST /api/streams — Create/import a new stream
 

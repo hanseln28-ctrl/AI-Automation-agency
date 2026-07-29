@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // POST /api/hooks — Generate hooks for a clip
 
 import { NextRequest, NextResponse } from 'next/server';

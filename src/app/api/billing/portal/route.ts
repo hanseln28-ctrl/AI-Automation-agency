@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // POST /api/billing/portal — Redirect to Stripe Customer Portal
 // Authenticated endpoint — uses Clerk session to identify user
 

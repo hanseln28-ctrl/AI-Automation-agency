@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // GET /api/captions/[id] — Get caption details
 // PATCH /api/captions/[id] — Update caption style
 

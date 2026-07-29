@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // GET /api/publishing — List scheduled posts
 // POST /api/publishing — Schedule a post
 

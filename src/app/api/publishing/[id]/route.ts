@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // PATCH /api/publishing/[id] — Update scheduled post
 // DELETE /api/publishing/[id] — Cancel scheduled post
 

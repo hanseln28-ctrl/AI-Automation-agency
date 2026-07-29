@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // GET /api/community — List community messages
 
 import { NextRequest, NextResponse } from 'next/server';

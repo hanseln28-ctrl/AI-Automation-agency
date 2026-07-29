@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // POST /api/billing/checkout — Create Stripe checkout session
 // Authenticated endpoint — uses Clerk session to identify user
 

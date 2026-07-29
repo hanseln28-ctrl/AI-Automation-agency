@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // ── Stripe Webhook Handler ──
 // Receives Stripe events for subscription lifecycle management.
 //

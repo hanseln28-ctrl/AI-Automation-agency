@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // GET /api/captions — List captions for a clip
 // POST /api/captions — Generate captions for a clip
 

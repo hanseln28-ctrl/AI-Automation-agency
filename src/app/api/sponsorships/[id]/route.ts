@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // GET /api/sponsorships/[id] — Get campaign details
 // PATCH /api/sponsorships/[id] — Update campaign
 // DELETE /api/sponsorships/[id] — Soft-delete campaign

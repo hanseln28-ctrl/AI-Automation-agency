@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // GET /api/clips — List user's clips (paginated, filterable)
 // POST /api/clips — Generate clips from a stream
 
