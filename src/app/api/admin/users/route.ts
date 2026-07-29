@@ -1,5 +1,7 @@
 // GET /api/admin/users — List/search all users (admin only)
 
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { db } from '@/lib/db/prisma';
