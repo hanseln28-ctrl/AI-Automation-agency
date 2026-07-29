@@ -58,7 +58,7 @@ const TOP_CLIPS = [
   },
 ];
 
-const platformVariants: Record<string, 'default' | 'accent' | 'success' | 'warning'> = {
+const platformVariants: Record<string, 'default' | 'accent' | 'success' | 'warning' | 'danger'> = {
   TikTok: 'accent',
   YouTube: 'danger',
   Instagram: 'warning',
