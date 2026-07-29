@@ -71,7 +71,7 @@ export const DELIVERABLE_STATUS_CONFIG: Record<
 
 export const CAMPAIGN_STATUS_CONFIG: Record<
   CampaignStatus,
-  { label: string; variant: 'accent' | 'success' | 'warning' | 'danger' | 'outline' }
+  { label: string; variant: 'accent' | 'success' | 'warning' | 'danger' | 'outline' | 'ghost' }
 > = {
   active: { label: 'Active', variant: 'success' },
   completed: { label: 'Completed', variant: 'outline' },
