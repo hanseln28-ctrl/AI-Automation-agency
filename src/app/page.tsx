@@ -5,7 +5,13 @@ import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  const { userId } = await auth();
+  let userId: string | null = null;
+  try {
+    const session = await auth();
+    userId = session.userId;
+  } catch {
+    // Clerk not configured — stay on landing page
+  }
 
   // Redirect authenticated users to dashboard
   if (userId) {
