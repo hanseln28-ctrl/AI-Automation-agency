@@ -1,64 +1,48 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { auth } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-// Define which routes are public (no auth required)
-const isPublicRoute = createRouteMatcher([
-  '/',
-  '/sign-in(.*)',
-  '/sign-up(.*)',
-  '/oauth(.*)',
-  '/api/webhooks/(.*)',
-]);
+// Public routes — no auth required
+const PUBLIC_PATH_PREFIXES = [
+  '/sign-in',
+  '/sign-up',
+  '/oauth',
+  '/api/webhooks',
+];
 
-// Define which routes require authentication
-const isProtectedRoute = createRouteMatcher([
-  '/dashboard(.*)',
-  '/streams(.*)',
-  '/clips(.*)',
-  '/captions(.*)',
-  '/publishing(.*)',
-  '/publisher(.*)',
-  '/analytics(.*)',
-  '/sponsorships(.*)',
-  '/revenue(.*)',
-  '/community(.*)',
-  '/settings(.*)',
-  '/admin(.*)',
-  '/api/((?!webhooks).)*', // Protect all API routes except webhooks
-]);
+function isPublicRoute(pathname: string): boolean {
+  if (pathname === '/') return true;
+  return PUBLIC_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+}
 
-// Define admin-only routes
-const isAdminRoute = createRouteMatcher(['/admin(.*)']);
+export default async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
 
-export default clerkMiddleware(async (auth, req) => {
-  // Skip auth entirely for public routes
-  if (isPublicRoute(req)) {
-    return;
+  // Public routes — let through immediately, no Clerk overhead
+  if (isPublicRoute(pathname)) {
+    return NextResponse.next();
   }
 
-  if (isProtectedRoute(req)) {
+  // Protected routes — try auth, fail gracefully
+  try {
     const { userId } = await auth();
     if (!userId) {
       const signInUrl = new URL('/sign-in', req.url);
       signInUrl.searchParams.set('redirect_url', req.url);
-      return Response.redirect(signInUrl);
+      return NextResponse.redirect(signInUrl);
     }
-
-    // Additional admin check
-    if (isAdminRoute(req)) {
-      const { sessionClaims } = await auth();
-      const role = (sessionClaims?.metadata as { role?: string })?.role;
-      if (role !== 'admin') {
-        return new Response('Forbidden', { status: 403 });
-      }
-    }
+  } catch {
+    // Clerk unavailable — redirect to sign-in
+    const signInUrl = new URL('/sign-in', req.url);
+    return NextResponse.redirect(signInUrl);
   }
-});
+
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and static files
     '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
     '/(api|trpc)(.*)',
   ],
 };
