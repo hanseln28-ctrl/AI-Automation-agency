@@ -198,7 +198,7 @@ export function getStripe(): Stripe {
   }
 
   stripeClient = new Stripe(key, {
-    apiVersion: '2024-11-20.acacia',
+    apiVersion: '2024-10-28.acacia',
     typescript: true,
   });
 
