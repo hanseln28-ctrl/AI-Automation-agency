@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
-import { ClientClerkProvider } from '@/components/layout/client-clerk-provider';
 import { ThemeProvider } from '@/components/layout/theme-provider';
 import { QueryProvider } from '@/components/layout/query-provider';
 import { Toaster } from '@/components/ui/sonner';
@@ -70,27 +69,25 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ClientClerkProvider>
-      <html
-        lang="en"
-        className={cn(inter.variable, jetbrainsMono.variable, 'dark')}
-        suppressHydrationWarning
-      >
-        <body className="min-h-screen bg-background font-sans text-text-primary antialiased">
-          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} forcedTheme="dark">
-            <QueryProvider>
-              {children}
-              <Toaster
-                position="bottom-right"
-                toastOptions={{
-                  className: 'glass-elevated',
-                  duration: 4000,
-                }}
-              />
-            </QueryProvider>
-          </ThemeProvider>
-        </body>
-      </html>
-    </ClientClerkProvider>
+    <html
+      lang="en"
+      className={cn(inter.variable, jetbrainsMono.variable, 'dark')}
+      suppressHydrationWarning
+    >
+      <body className="min-h-screen bg-background font-sans text-text-primary antialiased">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} forcedTheme="dark">
+          <QueryProvider>
+            {children}
+            <Toaster
+              position="bottom-right"
+              toastOptions={{
+                className: 'glass-elevated',
+                duration: 4000,
+              }}
+            />
+          </QueryProvider>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }
