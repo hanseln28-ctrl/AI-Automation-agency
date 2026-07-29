@@ -1,6 +1,8 @@
 import { currentUser } from '@clerk/nextjs/server';
 import { DashboardClient } from '@/components/dashboard';
 
+export const dynamic = 'force-dynamic';
+
 export default async function DashboardPage() {
   const user = await currentUser();
   const userName =

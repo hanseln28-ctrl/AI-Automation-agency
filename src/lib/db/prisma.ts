@@ -32,15 +32,40 @@ function createPrismaClient(): PrismaClient {
   }
 }
 
-export const prisma: PrismaClient =
-  globalForPrisma.prisma ?? createPrismaClient();
+function getPrisma(): PrismaClient {
+  if (globalForPrisma.prisma) return globalForPrisma.prisma;
+
+  const client = createPrismaClient();
+
+  if (process.env.NODE_ENV !== 'production') {
+    globalForPrisma.prisma = client;
+  }
+
+  return client;
+}
+
+/**
+ * Lazy Prisma client proxy.
+ *
+ * Defers `new PrismaClient()` (which calls `env("DATABASE_URL")`)
+ * to request time. During `next build`, API route modules are evaluated
+ * for route registration but never actually called — without lazy init,
+ * PrismaClient's constructor fails because DATABASE_URL is only available
+ * at runtime on Vercel.
+ */
+export const prisma: PrismaClient = new Proxy({} as PrismaClient, {
+  get(_, prop: string | symbol) {
+    const client = getPrisma();
+    const value = (client as Record<string | symbol, unknown>)[prop];
+    if (typeof value === 'function') {
+      return (value as (...args: unknown[]) => unknown).bind(client);
+    }
+    return value;
+  },
+});
 
 // Convenience alias
 export const db = prisma;
 
 // Default export for backward compatibility
 export default prisma;
-
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = prisma;
-}
