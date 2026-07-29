@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
-import { ClerkProvider } from '@clerk/nextjs';
+import { ClientClerkProvider } from '@/components/layout/client-clerk-provider';
 import { ThemeProvider } from '@/components/layout/theme-provider';
 import { QueryProvider } from '@/components/layout/query-provider';
 import { Toaster } from '@/components/ui/sonner';
@@ -70,7 +70,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider>
+    <ClientClerkProvider>
       <html
         lang="en"
         className={cn(inter.variable, jetbrainsMono.variable, 'dark')}
@@ -91,6 +91,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </ThemeProvider>
         </body>
       </html>
-    </ClerkProvider>
+    </ClientClerkProvider>
   );
 }
