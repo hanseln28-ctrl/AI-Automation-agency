@@ -183,11 +183,7 @@ export function StreamList() {
                               <Progress
                                 value={stream.progress}
                                 className="h-1.5 flex-1"
-                                indicatorClassName={
-                                  stream.status === 'failed'
-                                    ? 'bg-danger'
-                                    : 'bg-accent'
-                                }
+                                indicatorClassName="bg-accent"
                               />
                               <span className="text-2xs text-text-tertiary tabular-nums">
                                 {stream.progress}%
