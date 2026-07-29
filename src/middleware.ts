@@ -8,6 +8,7 @@ const PUBLIC_PATH_PREFIXES = [
   '/sign-up',
   '/oauth',
   '/api/webhooks',
+  '/api/debug-env',
 ];
 
 function isPublicRoute(pathname: string): boolean {
