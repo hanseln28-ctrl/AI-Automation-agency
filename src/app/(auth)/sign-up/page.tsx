@@ -1,11 +1,11 @@
 'use client';
 
 import { SignUp } from '@clerk/nextjs';
-import { ClientOnly } from '@/components/shared/client-only';
+import { ClerkErrorBoundary } from '@/components/shared/clerk-error-boundary';
 
 export default function SignUpPage() {
   return (
-    <ClientOnly>
+    <ClerkErrorBoundary>
       <SignUp
         appearance={{
           baseTheme: undefined,
@@ -79,6 +79,6 @@ export default function SignUpPage() {
         signInUrl="/sign-in"
         forceRedirectUrl="/dashboard"
       />
-    </ClientOnly>
+    </ClerkErrorBoundary>
   );
 }

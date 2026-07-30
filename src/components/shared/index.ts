@@ -1,4 +1,5 @@
 export { ClientOnly } from './client-only';
+export { ClerkErrorBoundary } from './clerk-error-boundary';
 export { StatCard } from './stat-card';
 export { PageHeader } from './page-header';
 export { EmptyState } from './empty-state';
