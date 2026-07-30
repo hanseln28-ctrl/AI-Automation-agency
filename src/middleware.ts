@@ -1,24 +1,38 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
 // Public routes — no auth required
-const isPublicRoute = createRouteMatcher([
-  '/',
-  '/sign-in(.*)',
-  '/sign-up(.*)',
-  '/oauth(.*)',
-  '/api/webhooks(.*)',
-  '/api/debug-env(.*)',
-  '/test-clerk(.*)',
-]);
+const PUBLIC_PREFIXES = [
+  '/sign-in',
+  '/sign-up',
+  '/oauth',
+  '/api/webhooks',
+  '/api/debug-env',
+];
 
-export default clerkMiddleware(async (auth, req) => {
-  if (!isPublicRoute(req)) {
-    const { userId, redirectToSignIn } = auth();
-    if (!userId) {
-      return redirectToSignIn();
-    }
+function isPublic(pathname: string): boolean {
+  if (pathname === '/') return true;
+  return PUBLIC_PREFIXES.some((p) => pathname.startsWith(p));
+}
+
+export default function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  if (isPublic(pathname)) {
+    return NextResponse.next();
   }
-});
+
+  // Protected route — check for Clerk session cookie
+  const hasSession = req.cookies.has('__session');
+
+  if (!hasSession) {
+    const signInUrl = new URL('/sign-in', req.url);
+    signInUrl.searchParams.set('redirect_url', req.url);
+    return NextResponse.redirect(signInUrl);
+  }
+
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [
