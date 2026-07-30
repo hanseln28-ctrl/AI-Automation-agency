@@ -1,8 +1,23 @@
-import { ClientClerkProvider } from '@/components/layout/client-clerk-provider';
+import dynamic from 'next/dynamic';
 import { Sidebar } from '@/components/layout/sidebar';
 import { TopBar } from '@/components/layout/topbar';
 
 export const dynamic = 'force-dynamic';
+
+const ClientClerkProvider = dynamic(
+  () =>
+    import('@/components/layout/client-clerk-provider').then(
+      (mod) => mod.ClientClerkProvider
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-screen items-center justify-center bg-background">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+      </div>
+    ),
+  }
+);
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
