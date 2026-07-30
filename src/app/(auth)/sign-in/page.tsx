@@ -1,10 +1,22 @@
 'use client';
 
-import { SignIn } from '@clerk/nextjs';
+import dynamic from 'next/dynamic';
+
+const ClerkSignIn = dynamic(
+  () => import('@clerk/nextjs').then((mod) => mod.SignIn),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+      </div>
+    ),
+  }
+);
 
 export default function SignInPage() {
   return (
-    <SignIn
+    <ClerkSignIn
       appearance={{
         baseTheme: undefined,
         variables: {
