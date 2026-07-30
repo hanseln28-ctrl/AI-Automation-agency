@@ -1,10 +1,10 @@
-import dynamic from 'next/dynamic';
+import nextDynamic from 'next/dynamic';
 import { Sidebar } from '@/components/layout/sidebar';
 import { TopBar } from '@/components/layout/topbar';
 
 export const dynamic = 'force-dynamic';
 
-const ClientClerkProvider = dynamic(
+const ClientClerkProvider = nextDynamic(
   () =>
     import('@/components/layout/client-clerk-provider').then(
       (mod) => mod.ClientClerkProvider
