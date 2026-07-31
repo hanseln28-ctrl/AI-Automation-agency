@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { MotionDiv, MotionP, AnimatePresence } from '@/components/shared/motion';
+import { ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { slideRight, slideLeft } from '@/lib/utils/animations';
 import { PageHeader } from '@/components/shared/page-header';
@@ -26,7 +26,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { PlatformConnectCard } from '@/components/streams/platform-connect-card';
-import { UploadDropzone } from '@/components/streams/upload-dropzone';
+import { UploadDropzone, type UploadResult } from '@/components/streams/upload-dropzone';
 import { UploadProgress, type UploadStage } from '@/components/streams/upload-progress';
 import { MOCK_PLATFORM_CONNECTIONS } from '@/components/streams/mock-data';
 import { PLATFORM_CONFIG } from '@/components/streams/types';
@@ -64,7 +64,6 @@ export default function ImportPage() {
     if (!connectingPlatform) return;
     setShowOAuthModal(false);
 
-    // Simulate OAuth success
     setTimeout(() => {
       setConnections((prev) =>
         prev.map((c) =>
@@ -105,7 +104,6 @@ export default function ImportPage() {
 
   const handleFileSelected = (file: File) => {
     setSelectedFile(file);
-    // Auto-fill title from filename
     const name = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
     setStreamTitle(name);
   };
@@ -116,47 +114,101 @@ export default function ImportPage() {
     setDescription('');
   };
 
-  const handleStartImport = () => {
-    if (!selectedFile) return;
+  const handleUploadSuccess = (result: UploadResult) => {
+    // Show post-upload processing
     setIsProcessing(true);
+    setUploadStage('processing');
 
-    // Simulate processing stages
-    const stages: { stage: UploadStage; progress: number; delay: number }[] = [
-      { stage: 'uploading', progress: 100, delay: 2000 },
-      { stage: 'processing', progress: 100, delay: 3000 },
-      { stage: 'analyzing', progress: 100, delay: 3500 },
-      { stage: 'generating', progress: 100, delay: 4000 },
+    // Simulate quick post-processing stages then redirect
+    const stages: { stage: UploadStage; delay: number }[] = [
+      { stage: 'processing', delay: 1500 },
+      { stage: 'analyzing', delay: 1000 },
+      { stage: 'generating', delay: 1000 },
     ];
 
     let currentIdx = 0;
     const runStage = () => {
       if (currentIdx >= stages.length) {
-        toast.success('Import complete! Redirecting...');
-        setTimeout(() => router.push('/streams'), 1000);
+        toast.success('Video uploaded successfully!', { description: result.title });
+        router.push(`/streams/${result.id}`);
         return;
       }
 
       const stage = stages[currentIdx]!;
       setUploadStage(stage.stage);
-      setUploadProgress(0);
 
-      // Animate progress
-      const totalSteps = 20;
-      let step = 0;
+      // Animate progress for this stage
+      const startTime = Date.now();
       const interval = setInterval(() => {
-        step++;
-        const pct = Math.min(Math.round((step / totalSteps) * 100), stage.progress);
+        const elapsed = Date.now() - startTime;
+        const pct = Math.min(Math.round((elapsed / stage.delay) * 100), 100);
         setUploadProgress(pct);
-        if (step >= totalSteps) {
+        if (elapsed >= stage.delay) {
           clearInterval(interval);
+          setUploadProgress(100);
           currentIdx++;
-          setTimeout(runStage, 500);
+          setTimeout(runStage, 200);
         }
-      }, stage.delay / totalSteps);
+      }, 60);
     };
 
-    setTimeout(runStage, 300);
+    setTimeout(runStage, 500);
   };
+
+  const handleUploadError = (error: string) => {
+    toast.error('Upload failed', { description: error });
+  };
+
+  // ── Legacy upload handler for the case where UploadDropzone has onUpload ──
+  // This is unused since UploadDropzone now handles upload internally via XHR,
+  // but we provide it for the case where the dropzone is used in a larger form.
+  const uploadHandler = React.useCallback(
+    async ({ file, title }: { file: File; title: string }): Promise<UploadResult> => {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('title', title);
+
+        xhr.upload.addEventListener('progress', (e) => {
+          if (e.lengthComputable) {
+            const pct = Math.round((e.loaded / e.total) * 100);
+            setUploadProgress(pct);
+          }
+        });
+
+        xhr.addEventListener('load', () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const json = JSON.parse(xhr.responseText);
+              if (json.success && json.data) {
+                resolve({ id: json.data.id, title: json.data.title });
+              } else {
+                reject(new Error(json.error || 'Upload failed'));
+              }
+            } catch {
+              reject(new Error('Invalid server response'));
+            }
+          } else {
+            try {
+              const json = JSON.parse(xhr.responseText);
+              reject(new Error(json.error || `Upload failed (${xhr.status})`));
+            } catch {
+              reject(new Error(`Upload failed (${xhr.status})`));
+            }
+          }
+        });
+
+        xhr.addEventListener('error', () => {
+          reject(new Error('Network error during upload.'));
+        });
+
+        xhr.open('POST', '/api/upload');
+        xhr.send(formData);
+      });
+    },
+    [],
+  );
 
   return (
     <div className="space-y-6 animate-fade-in max-w-4xl">
@@ -235,6 +287,10 @@ export default function ImportPage() {
                   onFileSelected={handleFileSelected}
                   selectedFile={selectedFile}
                   onClear={handleClearFile}
+                  onUpload={uploadHandler}
+                  uploadTitle={streamTitle}
+                  onUploadSuccess={handleUploadSuccess}
+                  onUploadError={handleUploadError}
                 />
 
                 {selectedFile && (
@@ -295,15 +351,10 @@ export default function ImportPage() {
                       </div>
                     </div>
 
-                    <div className="pt-2">
-                      <Button
-                        onClick={handleStartImport}
-                        disabled={!streamTitle.trim()}
-                        className="w-full sm:w-auto"
-                      >
-                        Start Import
-                      </Button>
-                    </div>
+                    <p className="text-2xs text-text-tertiary">
+                      Click &ldquo;Start Upload&rdquo; in the dropzone above to upload your video.
+                      The title and platform source will be saved with your stream.
+                    </p>
                   </MotionDiv>
                 )}
               </>
