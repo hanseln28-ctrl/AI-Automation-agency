@@ -2,13 +2,21 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus } from 'lucide-react';
+import { Plus, RefreshCw } from 'lucide-react';
 import { PageHeader } from '@/components/shared/page-header';
 import { Button } from '@/components/ui/button';
 import { StreamList } from '@/components/streams/stream-list';
+import { useStreams } from '@/lib/hooks/use-streams';
+import { streamToMock } from '@/lib/adapters';
 
 export default function StreamsPage() {
   const router = useRouter();
+  const { data: apiStreams, isLoading, error } = useStreams();
+
+  const streams = React.useMemo(
+    () => (apiStreams ? apiStreams.map(streamToMock) : []),
+    [apiStreams],
+  );
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -23,7 +31,11 @@ export default function StreamsPage() {
         }
       />
 
-      <StreamList />
+      <StreamList
+        streams={streams}
+        isLoading={isLoading}
+        error={error as Error | null}
+      />
     </div>
   );
 }

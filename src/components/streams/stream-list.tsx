@@ -23,9 +23,8 @@ import {
 import { EmptyState } from '@/components/shared/empty-state';
 import { LoadingTable } from '@/components/shared/loading-table';
 import { StreamCard } from './stream-card';
-import { MOCK_STREAMS } from './mock-data';
 import { PLATFORM_CONFIG, STATUS_CONFIG } from './types';
-import type { StreamStatus } from './types';
+import type { MockStream, StreamStatus } from './types';
 
 const TABS: { label: string; filter: StreamStatus | 'all' }[] = [
   { label: 'All Streams', filter: 'all' },
@@ -34,23 +33,40 @@ const TABS: { label: string; filter: StreamStatus | 'all' }[] = [
   { label: 'Failed', filter: 'failed' },
 ];
 
-export function StreamList() {
+interface StreamListProps {
+  streams: MockStream[];
+  isLoading?: boolean;
+  error?: Error | null;
+}
+
+export function StreamList({ streams, isLoading = false, error = null }: StreamListProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = React.useState<StreamStatus | 'all'>('all');
-  const [isLoading] = React.useState(false);
 
   const filtered =
     activeTab === 'all'
-      ? MOCK_STREAMS
+      ? streams
       : activeTab === 'importing'
-        ? MOCK_STREAMS.filter(
+        ? streams.filter(
             (s) =>
               s.status === 'importing' ||
               s.status === 'transcribing' ||
               s.status === 'analyzing' ||
               s.status === 'generating_clips',
           )
-        : MOCK_STREAMS.filter((s) => s.status === activeTab);
+        : streams.filter((s) => s.status === activeTab);
+
+  if (error) {
+    return (
+      <EmptyState
+        icon={Eye}
+        title="Failed to load streams"
+        description={error.message || 'An unexpected error occurred. Please try again.'}
+        actionLabel="Retry"
+        onAction={() => window.location.reload()}
+      />
+    );
+  }
 
   if (isLoading) {
     return <LoadingTable rows={6} columns={6} />;
