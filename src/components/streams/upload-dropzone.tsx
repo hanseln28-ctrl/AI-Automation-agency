@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useAuth } from '@clerk/nextjs';
 import { cn } from '@/lib/utils/cn';
 import { UploadCloud, FileVideo, X, Check, Loader2, AlertTriangle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
@@ -123,6 +124,7 @@ export function UploadDropzone({
   const [uploadState, setUploadState] = React.useState<UploadState>('idle');
   const [uploadProgress, setUploadProgress] = React.useState(0);
   const [errorMessage, setErrorMessage] = React.useState('');
+  const { getToken } = useAuth();
 
   const isUploadMode = !!(onUpload || onUploadSuccess);
 
@@ -165,6 +167,8 @@ export function UploadDropzone({
     setUploadProgress(0);
     setErrorMessage('');
 
+    const token = await getToken();
+
     try {
       const title =
         uploadTitle?.trim() ||
@@ -182,7 +186,10 @@ export function UploadDropzone({
         const presignedResponse = await fetch('/api/upload/presigned', {
           method: 'POST',
           credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({
             fileName: selectedFile.name,
             contentType: selectedFile.type,
@@ -218,7 +225,10 @@ export function UploadDropzone({
         const confirmResponse = await fetch('/api/upload/confirm', {
           method: 'POST',
           credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({
             key,
             title,

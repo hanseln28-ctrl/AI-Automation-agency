@@ -18,7 +18,7 @@ function generateKey(userId: string, filename: string): string {
 
 export async function POST(request: NextRequest) {
   // ── 1. Auth ──
-  const userId = await getAuthUserId();
+  const userId = await getAuthUserId(request);
 
   if (!userId) {
     return NextResponse.json(

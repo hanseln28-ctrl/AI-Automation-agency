@@ -10,7 +10,7 @@ import { objectExists, getPublicUrl } from '@/lib/storage/r2';
 
 export async function POST(request: NextRequest) {
   // ── 1. Auth ──
-  const userId = await getAuthUserId();
+  const userId = await getAuthUserId(request);
 
   if (!userId) {
     return NextResponse.json(
