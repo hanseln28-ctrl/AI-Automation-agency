@@ -3,11 +3,8 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import { useEffect, useState } from 'react';
 
-// NOTE: This publishable key is hardcoded because NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-// in .env has a trailing dollar sign ($) that may be a display artifact.
-// The env value is: pk_test_dml0YWwtbWFuLTMuY2xlcmsuYWNjb3VudHMuZGV2JA
-// We use the confirmed-valid key without the trailing $:
-const PUBLISHABLE_KEY = 'pk_test_dml0YWwtbWFuLTMuY2xlcmsuYWNjb3VudHMuZGV2';
+// Using the key exactly as shown in Clerk dashboard, including trailing $
+const PUBLISHABLE_KEY = 'pk_test_dml0YWwtbWFuLTMuY2xlcmsuYWNjb3VudHMuZGV2JA';
 
 export function ClientClerkProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
