@@ -12,10 +12,11 @@ export async function getAuthUserId(): Promise<string | null> {
 
     // Use Clerk's backend to verify the session token
     const { verifyToken } = await import('@clerk/backend');
-    const { data } = await verifyToken(sessionToken, {
+    const result = await verifyToken(sessionToken, {
       secretKey: process.env.CLERK_SECRET_KEY!,
     });
-    return data.sub ?? null;
+    const data = result.data as { sub?: string } | null;
+    return data?.sub ?? null;
   } catch {
     return null;
   }
