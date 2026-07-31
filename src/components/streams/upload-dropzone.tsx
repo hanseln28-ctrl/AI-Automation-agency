@@ -34,6 +34,7 @@ interface UploadDropzoneProps {
 }
 
 const MAX_SIZE = 10 * 1024 * 1024 * 1024; // 10GB
+const MAX_VERCEL_BODY_MB = 4; // ~4MB to stay under Vercel Hobby's 4.5MB serverless body limit
 
 function formatBytes(bytes: number): string {
   if (bytes === 0) return '0 B';
@@ -60,6 +61,9 @@ export function UploadDropzone({
   const [errorMessage, setErrorMessage] = React.useState('');
 
   const isUploadMode = !!(onUpload || onUploadSuccess);
+  const isOverVercelLimit = selectedFile
+    ? selectedFile.size > MAX_VERCEL_BODY_MB * 1024 * 1024
+    : false;
 
   const onDrop = React.useCallback(
     (acceptedFiles: File[]) => {
@@ -147,7 +151,15 @@ export function UploadDropzone({
           });
 
           xhr.addEventListener('error', () => {
-            reject(new Error('Network error during upload. Check your connection.'));
+            const isOverLimit =
+              selectedFile && selectedFile.size > MAX_VERCEL_BODY_MB * 1024 * 1024;
+            reject(
+              new Error(
+                isOverLimit
+                  ? "Upload failed — file exceeds Vercel's 4MB body limit. Please use a smaller file (< 4MB) or upgrade to Vercel Pro for larger uploads."
+                  : 'Upload failed — server unreachable. The file may be too large for the current plan.',
+              ),
+            );
           });
 
           xhr.addEventListener('abort', () => {
@@ -216,6 +228,19 @@ export function UploadDropzone({
           </div>
         </div>
 
+        {isOverVercelLimit && uploadState === 'idle' && (
+          <div className="flex items-start gap-2 rounded-lg bg-warning-subtle border border-warning/30 p-3">
+            <AlertTriangle className="h-4 w-4 text-warning shrink-0 mt-0.5" />
+            <div className="text-xs">
+              <p className="font-medium text-warning-foreground">File exceeds upload limit</p>
+              <p className="mt-0.5 text-warning-foreground/70">
+                This file exceeds Vercel&apos;s 4MB upload limit. Uploads will fail on the current
+                plan. Use a smaller file or upgrade to Vercel Pro.
+              </p>
+            </div>
+          </div>
+        )}
+
         {uploadState === 'uploading' && (
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
@@ -245,7 +270,7 @@ export function UploadDropzone({
           </div>
         )}
 
-        {uploadState === 'idle' && (
+        {uploadState === 'idle' && !isOverVercelLimit && (
           <button
             onClick={handleUpload}
             className="w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-white hover:bg-accent-hover active:scale-[0.98] transition-all"
@@ -327,7 +352,7 @@ export function UploadDropzone({
           <p className="mt-1 text-xs text-text-tertiary">or click to browse</p>
         </div>
         <p className="text-2xs text-text-tertiary">
-          Supported formats: MP4, MOV, WEBM (up to 10GB)
+          Supported formats: MP4, MOV, WEBM (up to 4MB on current plan, 10GB with Vercel Pro)
         </p>
       </div>
     </div>

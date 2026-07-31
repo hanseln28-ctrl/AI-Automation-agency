@@ -133,7 +133,10 @@ export default function ImportPage() {
   };
 
   const handleUploadError = (error: string) => {
-    toast.error('Upload failed', { description: error });
+    toast.error('Video upload failed', {
+      description: error,
+      duration: 8000,
+    });
   };
 
   return (
