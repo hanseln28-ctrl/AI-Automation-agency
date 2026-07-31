@@ -31,7 +31,7 @@ async function fetchApi<T>(url: string, options?: RequestInit): Promise<T> {
 export const streamKeys = {
   all: ['streams'] as const,
   lists: () => [...streamKeys.all, 'list'] as const,
-  list: (filters?: Record<string, string | undefined>) =>
+  list: (filters?: Record<string, unknown>) =>
     [...streamKeys.lists(), filters] as const,
   details: () => [...streamKeys.all, 'detail'] as const,
   detail: (id: string) => [...streamKeys.details(), id] as const,

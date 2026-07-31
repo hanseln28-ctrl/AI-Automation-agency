@@ -31,7 +31,7 @@ async function fetchApi<T>(url: string, options?: RequestInit): Promise<T> {
 export const clipKeys = {
   all: ['clips'] as const,
   lists: () => [...clipKeys.all, 'list'] as const,
-  list: (filters?: Record<string, string | undefined>) =>
+  list: (filters?: Record<string, unknown>) =>
     [...clipKeys.lists(), filters] as const,
   details: () => [...clipKeys.all, 'detail'] as const,
   detail: (id: string) => [...clipKeys.details(), id] as const,
