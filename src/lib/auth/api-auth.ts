@@ -1,8 +1,8 @@
 import { cookies } from 'next/headers';
 
 /**
- * Returns the Clerk userId from the __session cookie using Clerk's backend API.
- * Does NOT require clerkMiddleware() — works in any route handler.
+ * Returns the Clerk userId from the __session cookie by calling Clerk's REST API directly.
+ * Does NOT require clerkMiddleware(), auth(), or any Clerk SDK functions.
  */
 export async function getAuthUserId(): Promise<string | null> {
   try {
@@ -10,13 +10,17 @@ export async function getAuthUserId(): Promise<string | null> {
     const sessionToken = cookieStore.get('__session')?.value;
     if (!sessionToken) return null;
 
-    // Use Clerk's backend to verify the session token
-    const { verifyToken } = await import('@clerk/backend');
-    const result = await verifyToken(sessionToken, {
-      secretKey: process.env.CLERK_SECRET_KEY!,
+    // Call Clerk's API directly with the session token
+    const res = await fetch('https://api.clerk.dev/v1/me', {
+      headers: {
+        Authorization: `Bearer ${sessionToken}`,
+      },
     });
-    const data = result.data as { sub?: string } | null;
-    return data?.sub ?? null;
+
+    if (!res.ok) return null;
+    
+    const user = await res.json();
+    return user.id ?? null;
   } catch {
     return null;
   }
