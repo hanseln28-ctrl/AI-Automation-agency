@@ -6,14 +6,14 @@ import { cn } from '@/lib/utils/cn';
 import { UploadCloud, FileVideo, X, Check, Loader2, AlertTriangle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
-export interface UploadProgress {
+export interface UploadProgressInfo {
   loaded: number;
   total: number;
   percent: number;
 }
 
 export interface UploadResult {
-  id: string; // stream ID
+  id: string;
   title: string;
 }
 
@@ -21,14 +21,16 @@ interface UploadDropzoneProps {
   onFileSelected?: (file: File) => void;
   selectedFile: File | null;
   onClear: () => void;
-  /** When provided, the dropzone handles the upload itself via XHR */
-  onUpload?: (params: { file: File; title: string }) => Promise<UploadResult>;
-  /** Called after successful upload with the stream ID */
+  /** When provided, the dropzone handles the upload via its built-in XHR to /api/upload */
   onUploadSuccess?: (result: UploadResult) => void;
   /** Called on upload error */
   onUploadError?: (error: string) => void;
-  /** Optional title for the upload (shown in UI only when onUpload is provided) */
+  /** Optional title for the upload */
   uploadTitle?: string;
+  /** Callback for upload progress */
+  onUploadProgress?: (progress: UploadProgressInfo) => void;
+  /** External upload handler (overrides built-in XHR when provided) */
+  onUpload?: (params: { file: File; title: string }) => Promise<UploadResult>;
 }
 
 const MAX_SIZE = 10 * 1024 * 1024 * 1024; // 10GB
@@ -51,10 +53,13 @@ export function UploadDropzone({
   onUploadSuccess,
   onUploadError,
   uploadTitle,
+  onUploadProgress,
 }: UploadDropzoneProps) {
   const [uploadState, setUploadState] = React.useState<UploadState>('idle');
   const [uploadProgress, setUploadProgress] = React.useState(0);
   const [errorMessage, setErrorMessage] = React.useState('');
+
+  const isUploadMode = !!(onUpload || onUploadSuccess);
 
   const onDrop = React.useCallback(
     (acceptedFiles: File[]) => {
@@ -89,7 +94,7 @@ export function UploadDropzone({
   };
 
   const handleUpload = React.useCallback(async () => {
-    if (!selectedFile || !onUpload) return;
+    if (!selectedFile) return;
 
     setUploadState('uploading');
     setUploadProgress(0);
@@ -100,53 +105,59 @@ export function UploadDropzone({
         uploadTitle?.trim() ||
         selectedFile.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
 
-      // Use XMLHttpRequest for progress tracking
-      const result = await new Promise<UploadResult>((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        formData.append('title', title);
+      let result: UploadResult;
 
-        xhr.upload.addEventListener('progress', (e) => {
-          if (e.lengthComputable) {
-            const pct = Math.round((e.loaded / e.total) * 100);
-            setUploadProgress(pct);
-          }
-        });
+      if (onUpload) {
+        result = await onUpload({ file: selectedFile, title });
+      } else {
+        result = await new Promise<UploadResult>((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          const formData = new FormData();
+          formData.append('file', selectedFile);
+          formData.append('title', title);
 
-        xhr.addEventListener('load', () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            try {
-              const json = JSON.parse(xhr.responseText);
-              if (json.success && json.data) {
-                resolve({ id: json.data.id, title: json.data.title });
-              } else {
-                reject(new Error(json.error || 'Upload failed'));
+          xhr.upload.addEventListener('progress', (e) => {
+            if (e.lengthComputable) {
+              const pct = Math.round((e.loaded / e.total) * 100);
+              setUploadProgress(pct);
+              onUploadProgress?.({ loaded: e.loaded, total: e.total, percent: pct });
+            }
+          });
+
+          xhr.addEventListener('load', () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              try {
+                const json = JSON.parse(xhr.responseText);
+                if (json.success && json.data) {
+                  resolve({ id: json.data.id, title: json.data.title });
+                } else {
+                  reject(new Error(json.error || 'Upload failed'));
+                }
+              } catch {
+                reject(new Error('Invalid server response'));
               }
-            } catch {
-              reject(new Error('Invalid server response'));
+            } else {
+              try {
+                const json = JSON.parse(xhr.responseText);
+                reject(new Error(json.error || `Upload failed (${xhr.status})`));
+              } catch {
+                reject(new Error(`Upload failed (${xhr.status})`));
+              }
             }
-          } else {
-            try {
-              const json = JSON.parse(xhr.responseText);
-              reject(new Error(json.error || `Upload failed (${xhr.status})`));
-            } catch {
-              reject(new Error(`Upload failed (${xhr.status})`));
-            }
-          }
-        });
+          });
 
-        xhr.addEventListener('error', () => {
-          reject(new Error('Network error during upload. Check your connection.'));
-        });
+          xhr.addEventListener('error', () => {
+            reject(new Error('Network error during upload. Check your connection.'));
+          });
 
-        xhr.addEventListener('abort', () => {
-          reject(new Error('Upload cancelled.'));
-        });
+          xhr.addEventListener('abort', () => {
+            reject(new Error('Upload cancelled.'));
+          });
 
-        xhr.open('POST', '/api/upload');
-        xhr.send(formData);
-      });
+          xhr.open('POST', '/api/upload');
+          xhr.send(formData);
+        });
+      }
 
       setUploadState('success');
       setUploadProgress(100);
@@ -157,13 +168,11 @@ export function UploadDropzone({
       setErrorMessage(message);
       onUploadError?.(message);
     }
-  }, [selectedFile, onUpload, uploadTitle, onUploadSuccess, onUploadError]);
+  }, [selectedFile, onUpload, uploadTitle, onUploadSuccess, onUploadError, onUploadProgress]);
 
-  // ── Selected file with upload button ──
-  if (selectedFile && onUpload) {
+  if (selectedFile && isUploadMode) {
     return (
       <div className="rounded-xl border border-border-subtle bg-background-card p-6 space-y-4">
-        {/* File info */}
         <div className="flex items-center gap-4">
           <div
             className={cn(
@@ -172,15 +181,17 @@ export function UploadDropzone({
                 ? 'bg-success-subtle'
                 : uploadState === 'error'
                   ? 'bg-danger-subtle'
-                  : 'bg-success-subtle',
+                  : 'bg-accent-subtle',
             )}
           >
             {uploadState === 'uploading' ? (
               <Loader2 className="h-6 w-6 animate-spin text-accent" />
             ) : uploadState === 'error' ? (
               <AlertTriangle className="h-6 w-6 text-danger" />
+            ) : uploadState === 'success' ? (
+              <Check className="h-6 w-6 text-success" />
             ) : (
-              <FileVideo className="h-6 w-6 text-success" />
+              <FileVideo className="h-6 w-6 text-accent" />
             )}
           </div>
           <div className="flex-1 min-w-0">
@@ -205,7 +216,6 @@ export function UploadDropzone({
           </div>
         </div>
 
-        {/* Upload progress bar */}
         {uploadState === 'uploading' && (
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
@@ -216,31 +226,25 @@ export function UploadDropzone({
           </div>
         )}
 
-        {/* Success state */}
         {uploadState === 'success' && (
           <div className="flex items-center gap-1.5 text-xs text-success">
             <Check className="h-3 w-3" />
-            <span>Upload complete!</span>
+            <span>Upload complete! Processing will continue on the stream page.</span>
           </div>
         )}
 
-        {/* Error state */}
         {uploadState === 'error' && (
           <div className="space-y-3">
-            <div className="flex items-center gap-1.5 text-xs text-danger">
-              <AlertTriangle className="h-3 w-3" />
+            <div className="flex items-start gap-1.5 text-xs text-danger">
+              <AlertTriangle className="h-3 w-3 mt-0.5 shrink-0" />
               <span>{errorMessage}</span>
             </div>
-            <button
-              onClick={handleClear}
-              className="text-xs text-accent hover:underline"
-            >
+            <button onClick={handleClear} className="text-xs text-accent hover:underline">
               Try a different file
             </button>
           </div>
         )}
 
-        {/* Upload button */}
         {uploadState === 'idle' && (
           <button
             onClick={handleUpload}
@@ -253,8 +257,7 @@ export function UploadDropzone({
     );
   }
 
-  // ── Selected file without upload handler (original behavior) ──
-  if (selectedFile && !onUpload) {
+  if (selectedFile && !isUploadMode) {
     return (
       <div className="rounded-xl border border-border-subtle bg-background-card p-6">
         <div className="flex items-center gap-4">
@@ -276,9 +279,7 @@ export function UploadDropzone({
             <div className="mt-1 flex items-center gap-3 text-xs text-text-secondary">
               <span>{formatBytes(selectedFile.size)}</span>
               <span className="text-text-tertiary">•</span>
-              <span>
-                {selectedFile.type.split('/')[1]?.toUpperCase() ?? 'MP4'}
-              </span>
+              <span>{selectedFile.type.split('/')[1]?.toUpperCase() ?? 'MP4'}</span>
             </div>
             <div className="mt-2 flex items-center gap-1.5 text-xs text-success">
               <Check className="h-3 w-3" />
@@ -290,7 +291,6 @@ export function UploadDropzone({
     );
   }
 
-  // ── Drop zone (no file selected) ──
   return (
     <div
       {...getRootProps()}
@@ -304,11 +304,9 @@ export function UploadDropzone({
       )}
     >
       <input {...getInputProps()} />
-
       {isDragActive && !isDragReject && (
         <div className="absolute inset-0 rounded-xl bg-accent/5 blur-xl" />
       )}
-
       <div className="relative flex flex-col items-center gap-3">
         <div
           className={cn(
