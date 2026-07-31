@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { MotionDiv, MotionButton, MotionSpan, MotionTr, MotionP, AnimatePresence } from '@/components/shared/motion';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { MotionDiv, MotionP, AnimatePresence } from '@/components/shared/motion';
+import { ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { slideRight, slideLeft } from '@/lib/utils/animations';
 import { PageHeader } from '@/components/shared/page-header';
@@ -26,7 +26,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { PlatformConnectCard } from '@/components/streams/platform-connect-card';
-import { UploadDropzone } from '@/components/streams/upload-dropzone';
+import { UploadDropzone, type UploadResult, type UploadProgressInfo } from '@/components/streams/upload-dropzone';
 import { UploadProgress, type UploadStage } from '@/components/streams/upload-progress';
 import { MOCK_PLATFORM_CONNECTIONS } from '@/components/streams/mock-data';
 import { PLATFORM_CONFIG } from '@/components/streams/types';
@@ -39,21 +39,17 @@ export default function ImportPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = React.useState<ImportTab>('connect');
 
-  // Platform connection state (mock)
   const [connections, setConnections] = React.useState<PlatformConnection[]>(MOCK_PLATFORM_CONNECTIONS);
   const [connectingPlatform, setConnectingPlatform] = React.useState<Platform | null>(null);
   const [showOAuthModal, setShowOAuthModal] = React.useState(false);
 
-  // Upload state
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
   const [streamTitle, setStreamTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
-  const [platformSource, setPlatformSource] = React.useState<Platform>('twitch');
+  const [platformSource, setPlatformSource] = React.useState<Platform>('upload');
   const [isProcessing, setIsProcessing] = React.useState(false);
   const [uploadStage, setUploadStage] = React.useState<UploadStage>('uploading');
   const [uploadProgress, setUploadProgress] = React.useState(0);
-
-  // ── Platform Connect Handlers ──
 
   const handleConnect = (platform: Platform) => {
     setConnectingPlatform(platform);
@@ -63,18 +59,11 @@ export default function ImportPage() {
   const handleOAuthContinue = () => {
     if (!connectingPlatform) return;
     setShowOAuthModal(false);
-
-    // Simulate OAuth success
     setTimeout(() => {
       setConnections((prev) =>
         prev.map((c) =>
           c.platform === connectingPlatform
-            ? {
-                ...c,
-                connected: true,
-                accountName: `DemoUser_${connectingPlatform}`,
-                handle: `@demouser_${connectingPlatform}`,
-              }
+            ? { ...c, connected: true, accountName: `DemoUser_${connectingPlatform}`, handle: `@demouser_${connectingPlatform}` }
             : c,
         ),
       );
@@ -86,9 +75,7 @@ export default function ImportPage() {
   const handleDisconnect = (platform: Platform) => {
     setConnections((prev) =>
       prev.map((c) =>
-        c.platform === platform
-          ? { ...c, connected: false, accountName: undefined, handle: undefined }
-          : c,
+        c.platform === platform ? { ...c, connected: false, accountName: undefined, handle: undefined } : c,
       ),
     );
     toast.success(`Disconnected from ${PLATFORM_CONFIG[platform].label}`);
@@ -96,16 +83,11 @@ export default function ImportPage() {
 
   const handleImportFromPlatform = (platform: Platform) => {
     toast.success(`Importing latest stream from ${PLATFORM_CONFIG[platform].label}...`);
-    setTimeout(() => {
-      router.push('/streams');
-    }, 1500);
+    setTimeout(() => router.push('/streams'), 1500);
   };
-
-  // ── Upload Handlers ──
 
   const handleFileSelected = (file: File) => {
     setSelectedFile(file);
-    // Auto-fill title from filename
     const name = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
     setStreamTitle(name);
   };
@@ -114,53 +96,48 @@ export default function ImportPage() {
     setSelectedFile(null);
     setStreamTitle('');
     setDescription('');
+    setIsProcessing(false);
   };
 
-  const handleStartImport = () => {
-    if (!selectedFile) return;
+  const handleUploadSuccess = (result: UploadResult) => {
     setIsProcessing(true);
-
-    // Simulate processing stages
-    const stages: { stage: UploadStage; progress: number; delay: number }[] = [
-      { stage: 'uploading', progress: 100, delay: 2000 },
-      { stage: 'processing', progress: 100, delay: 3000 },
-      { stage: 'analyzing', progress: 100, delay: 3500 },
-      { stage: 'generating', progress: 100, delay: 4000 },
+    setUploadStage('processing');
+    const stages: { stage: UploadStage; delay: number }[] = [
+      { stage: 'processing', delay: 1500 },
+      { stage: 'analyzing', delay: 1000 },
+      { stage: 'generating', delay: 1000 },
     ];
-
     let currentIdx = 0;
     const runStage = () => {
       if (currentIdx >= stages.length) {
-        toast.success('Import complete! Redirecting...');
-        setTimeout(() => router.push('/streams'), 1000);
+        toast.success('Video uploaded successfully!', { description: result.title });
+        router.push(`/streams/${result.id}`);
         return;
       }
-
       const stage = stages[currentIdx]!;
       setUploadStage(stage.stage);
-      setUploadProgress(0);
-
-      // Animate progress
-      const totalSteps = 20;
-      let step = 0;
+      const startTime = Date.now();
       const interval = setInterval(() => {
-        step++;
-        const pct = Math.min(Math.round((step / totalSteps) * 100), stage.progress);
+        const elapsed = Date.now() - startTime;
+        const pct = Math.min(Math.round((elapsed / stage.delay) * 100), 100);
         setUploadProgress(pct);
-        if (step >= totalSteps) {
+        if (elapsed >= stage.delay) {
           clearInterval(interval);
+          setUploadProgress(100);
           currentIdx++;
-          setTimeout(runStage, 500);
+          setTimeout(runStage, 200);
         }
-      }, stage.delay / totalSteps);
+      }, 60);
     };
+    setTimeout(runStage, 500);
+  };
 
-    setTimeout(runStage, 300);
+  const handleUploadError = (error: string) => {
+    toast.error('Upload failed', { description: error });
   };
 
   return (
     <div className="space-y-6 animate-fade-in max-w-4xl">
-      {/* Header */}
       <PageHeader
         title="Import Stream"
         description="Connect a streaming platform or upload a video file to get started."
@@ -172,7 +149,6 @@ export default function ImportPage() {
         }
       />
 
-      {/* Tab Switcher */}
       <div className="flex gap-1 rounded-lg bg-background-surface p-1 w-fit">
         <button
           onClick={() => setActiveTab('connect')}
@@ -198,16 +174,9 @@ export default function ImportPage() {
         </button>
       </div>
 
-      {/* Tab Content */}
       <AnimatePresence mode="wait">
         {activeTab === 'connect' ? (
-          <MotionDiv
-            key="connect"
-            variants={slideRight}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-          >
+          <MotionDiv key="connect" variants={slideRight} initial="hidden" animate="visible" exit="exit">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {connections.map((conn) => (
                 <PlatformConnectCard
@@ -221,89 +190,47 @@ export default function ImportPage() {
             </div>
           </MotionDiv>
         ) : (
-          <MotionDiv
-            key="upload"
-            variants={slideLeft}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="space-y-6"
-          >
+          <MotionDiv key="upload" variants={slideLeft} initial="hidden" animate="visible" exit="exit" className="space-y-6">
             {!isProcessing ? (
               <>
                 <UploadDropzone
                   onFileSelected={handleFileSelected}
                   selectedFile={selectedFile}
                   onClear={handleClearFile}
+                  onUploadSuccess={handleUploadSuccess}
+                  onUploadError={handleUploadError}
+                  uploadTitle={streamTitle}
                 />
 
                 {selectedFile && (
-                  <MotionDiv
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="rounded-xl border border-border-subtle bg-background-card p-6 space-y-4"
-                  >
-                    <h3 className="text-sm font-semibold text-text-primary">
-                      Stream Details
-                    </h3>
-
+                  <MotionDiv initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl border border-border-subtle bg-background-card p-6 space-y-4">
+                    <h3 className="text-sm font-semibold text-text-primary">Stream Details</h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-xs font-medium text-text-secondary mb-1.5">
-                          Stream Title
-                        </label>
-                        <Input
-                          value={streamTitle}
-                          onChange={(e) => setStreamTitle(e.target.value)}
-                          placeholder="Enter stream title..."
-                        />
+                        <label className="block text-xs font-medium text-text-secondary mb-1.5">Stream Title</label>
+                        <Input value={streamTitle} onChange={(e) => setStreamTitle(e.target.value)} placeholder="Enter stream title..." />
                       </div>
-
                       <div>
-                        <label className="block text-xs font-medium text-text-secondary mb-1.5">
-                          Description (optional)
-                        </label>
-                        <Textarea
-                          value={description}
-                          onChange={(e) => setDescription(e.target.value)}
-                          placeholder="Add a description..."
-                          rows={3}
-                        />
+                        <label className="block text-xs font-medium text-text-secondary mb-1.5">Description (optional)</label>
+                        <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Add a description..." rows={3} />
                       </div>
-
                       <div>
-                        <label className="block text-xs font-medium text-text-secondary mb-1.5">
-                          Platform Source
-                        </label>
-                        <Select
-                          value={platformSource}
-                          onValueChange={(v) => setPlatformSource(v as Platform)}
-                        >
+                        <label className="block text-xs font-medium text-text-secondary mb-1.5">Platform Source</label>
+                        <Select value={platformSource} onValueChange={(v) => setPlatformSource(v as Platform)}>
                           <SelectTrigger className="w-full max-w-[240px]">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            {(['twitch', 'youtube', 'kick', 'tiktok', 'upload'] as Platform[]).map(
-                              (p) => (
-                                <SelectItem key={p} value={p}>
-                                  {PLATFORM_CONFIG[p].label}
-                                </SelectItem>
-                              ),
-                            )}
+                            {(['twitch', 'youtube', 'kick', 'tiktok', 'upload'] as Platform[]).map((p) => (
+                              <SelectItem key={p} value={p}>{PLATFORM_CONFIG[p].label}</SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       </div>
                     </div>
-
-                    <div className="pt-2">
-                      <Button
-                        onClick={handleStartImport}
-                        disabled={!streamTitle.trim()}
-                        className="w-full sm:w-auto"
-                      >
-                        Start Import
-                      </Button>
-                    </div>
+                    <p className="text-2xs text-text-tertiary">
+                      Click &ldquo;Start Upload&rdquo; above to upload your video. The title and platform source will be saved with your stream record.
+                    </p>
                   </MotionDiv>
                 )}
               </>
@@ -314,20 +241,15 @@ export default function ImportPage() {
         )}
       </AnimatePresence>
 
-      {/* OAuth Modal */}
       <Dialog open={showOAuthModal} onOpenChange={setShowOAuthModal}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              Connect to {connectingPlatform ? PLATFORM_CONFIG[connectingPlatform].label : 'Platform'}
-            </DialogTitle>
+            <DialogTitle>Connect to {connectingPlatform ? PLATFORM_CONFIG[connectingPlatform].label : 'Platform'}</DialogTitle>
             <DialogDescription>
-              You&apos;ll be redirected to{' '}
-              {connectingPlatform ? PLATFORM_CONFIG[connectingPlatform].label : 'the platform'} to
+              You&apos;ll be redirected to {connectingPlatform ? PLATFORM_CONFIG[connectingPlatform].label : 'the platform'} to
               authorize IRON Creator OS. This allows us to import your streams automatically.
             </DialogDescription>
           </DialogHeader>
-
           <div className="rounded-lg border border-border bg-background-surface p-4 space-y-3 text-sm text-text-secondary">
             <p>IRON Creator OS will be able to:</p>
             <ul className="list-disc pl-5 space-y-1 text-text-tertiary">
@@ -335,18 +257,11 @@ export default function ImportPage() {
               <li>Download past broadcasts for processing</li>
               <li>Access stream titles and descriptions</li>
             </ul>
-            <p className="text-2xs text-text-tertiary">
-              This is a demo — no actual OAuth flow is configured yet.
-            </p>
+            <p className="text-2xs text-text-tertiary">This is a demo — no actual OAuth flow is configured yet.</p>
           </div>
-
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowOAuthModal(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handleOAuthContinue}>
-              Continue to {connectingPlatform ? PLATFORM_CONFIG[connectingPlatform].label : 'Platform'}
-            </Button>
+            <Button variant="outline" onClick={() => setShowOAuthModal(false)}>Cancel</Button>
+            <Button onClick={handleOAuthContinue}>Continue to {connectingPlatform ? PLATFORM_CONFIG[connectingPlatform].label : 'Platform'}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
