@@ -181,6 +181,7 @@ export function UploadDropzone({
         // Step 1: Get presigned URL from our API
         const presignedResponse = await fetch('/api/upload/presigned', {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             fileName: selectedFile.name,
@@ -216,6 +217,7 @@ export function UploadDropzone({
         // Step 3: Confirm the upload with our API to create the DB record
         const confirmResponse = await fetch('/api/upload/confirm', {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             key,
