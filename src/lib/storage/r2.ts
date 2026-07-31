@@ -2,8 +2,10 @@ import {
   S3Client,
   DeleteObjectCommand,
   HeadObjectCommand,
+  PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 // ── Configuration ──
 
@@ -71,6 +73,28 @@ export function getPublicUrl(key: string): string {
 
   const config = _config ?? getR2Config();
   return `https://${config.bucketName}.${config.accountId}.r2.cloudflarestorage.com/${key}`;
+}
+
+// ── Presigned URL ──
+
+/**
+ * Generates a presigned URL for uploading an object directly to R2.
+ * The browser uploads directly to this URL — bypassing Vercel's 4.5MB
+ * serverless body limit entirely.
+ */
+export async function getPresignedUploadUrl(
+  key: string,
+  contentType: string,
+  expiresInSeconds = 3600,
+): Promise<string> {
+  const client = getClient();
+  const bucket = getBucket();
+  const command = new PutObjectCommand({
+    Bucket: bucket,
+    Key: key,
+    ContentType: contentType,
+  });
+  return getSignedUrl(client, command, { expiresIn: expiresInSeconds });
 }
 
 // ── Upload ──

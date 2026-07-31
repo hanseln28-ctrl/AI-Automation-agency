@@ -21,7 +21,7 @@ interface UploadDropzoneProps {
   onFileSelected?: (file: File) => void;
   selectedFile: File | null;
   onClear: () => void;
-  /** When provided, the dropzone handles the upload via its built-in XHR to /api/upload */
+  /** When provided, the dropzone handles the upload via presigned R2 URLs (3-step flow) */
   onUploadSuccess?: (result: UploadResult) => void;
   /** Called on upload error */
   onUploadError?: (error: string) => void;
@@ -44,6 +44,71 @@ function formatBytes(bytes: number): string {
 }
 
 type UploadState = 'idle' | 'uploading' | 'success' | 'error';
+
+/**
+ * Uploads a file to a URL using fetch with a TransformStream to track progress.
+ * This bypasses XHR and works with presigned URLs for direct-to-R2 uploads.
+ */
+async function uploadWithProgress(
+  url: string,
+  file: File,
+  onProgress: (percent: number, loaded: number, total: number) => void,
+): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    // Create a ReadableStream from the file that reports progress
+    const fileStream = file.stream();
+    const total = file.size;
+    let loaded = 0;
+
+    const progressStream = new ReadableStream({
+      async start(controller) {
+        const reader = fileStream.getReader();
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+              controller.close();
+              return;
+            }
+            loaded += value.byteLength;
+            const pct = Math.round((loaded / total) * 100);
+            onProgress(pct, loaded, total);
+            controller.enqueue(value);
+          }
+        } catch (err) {
+          controller.error(err);
+        }
+      },
+    });
+
+    fetch(url, {
+      method: 'PUT',
+      body: progressStream,
+      headers: {
+        'Content-Type': file.type || 'application/octet-stream',
+      },
+      // Don't follow redirects — presigned URLs are direct
+      redirect: 'follow',
+    })
+      .then((response) => {
+        if (response.ok) {
+          resolve();
+        } else {
+          reject(new Error(`Upload failed with status ${response.status}`));
+        }
+      })
+      .catch((err) => {
+        // Check if it's a network error
+        const message =
+          err instanceof TypeError && err.message === 'Failed to fetch'
+            ? 'Network error — please check your connection and try again.'
+            : err instanceof Error
+              ? err.message
+              : 'Upload failed';
+        reject(new Error(message));
+      });
+  });
+}
 
 export function UploadDropzone({
   onFileSelected,
@@ -108,55 +173,74 @@ export function UploadDropzone({
       let result: UploadResult;
 
       if (onUpload) {
+        // ── External handler (backward compatibility) ──
         result = await onUpload({ file: selectedFile, title });
       } else {
-        result = await new Promise<UploadResult>((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-          const formData = new FormData();
-          formData.append('file', selectedFile);
-          formData.append('title', title);
+        // ── Presigned URL flow: presigned → PUT to R2 → confirm ──
 
-          xhr.upload.addEventListener('progress', (e) => {
-            if (e.lengthComputable) {
-              const pct = Math.round((e.loaded / e.total) * 100);
-              setUploadProgress(pct);
-              onUploadProgress?.({ loaded: e.loaded, total: e.total, percent: pct });
-            }
-          });
-
-          xhr.addEventListener('load', () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              try {
-                const json = JSON.parse(xhr.responseText);
-                if (json.success && json.data) {
-                  resolve({ id: json.data.id, title: json.data.title });
-                } else {
-                  reject(new Error(json.error || 'Upload failed'));
-                }
-              } catch {
-                reject(new Error('Invalid server response'));
-              }
-            } else {
-              try {
-                const json = JSON.parse(xhr.responseText);
-                reject(new Error(json.error || `Upload failed (${xhr.status})`));
-              } catch {
-                reject(new Error(`Upload failed (${xhr.status})`));
-              }
-            }
-          });
-
-          xhr.addEventListener('error', () => {
-            reject(new Error('Upload failed — server error. Please try again.'));
-          });
-
-          xhr.addEventListener('abort', () => {
-            reject(new Error('Upload cancelled.'));
-          });
-
-          xhr.open('POST', '/api/upload');
-          xhr.send(formData);
+        // Step 1: Get presigned URL from our API
+        const presignedResponse = await fetch('/api/upload/presigned', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fileName: selectedFile.name,
+            contentType: selectedFile.type,
+            title,
+          }),
         });
+
+        if (!presignedResponse.ok) {
+          let errorMsg = `Failed to prepare upload (${presignedResponse.status})`;
+          try {
+            const errJson = await presignedResponse.json();
+            errorMsg = errJson.error || errorMsg;
+          } catch {
+            // use default
+          }
+          throw new Error(errorMsg);
+        }
+
+        const presignedData = await presignedResponse.json();
+        if (!presignedData.success || !presignedData.data) {
+          throw new Error(presignedData.error || 'Failed to get upload URL');
+        }
+
+        const { presignedUrl, key } = presignedData.data;
+
+        // Step 2: Upload directly to R2 via presigned URL with progress tracking
+        await uploadWithProgress(presignedUrl, selectedFile, (pct, loaded, total) => {
+          setUploadProgress(pct);
+          onUploadProgress?.({ loaded, total, percent: pct });
+        });
+
+        // Step 3: Confirm the upload with our API to create the DB record
+        const confirmResponse = await fetch('/api/upload/confirm', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            key,
+            title,
+            fileSizeBytes: selectedFile.size,
+          }),
+        });
+
+        if (!confirmResponse.ok) {
+          let errorMsg = `Failed to confirm upload (${confirmResponse.status})`;
+          try {
+            const errJson = await confirmResponse.json();
+            errorMsg = errJson.error || errorMsg;
+          } catch {
+            // use default
+          }
+          throw new Error(errorMsg);
+        }
+
+        const confirmData = await confirmResponse.json();
+        if (!confirmData.success || !confirmData.data) {
+          throw new Error(confirmData.error || 'Upload confirmation failed');
+        }
+
+        result = { id: confirmData.data.id, title: confirmData.data.title };
       }
 
       setUploadState('success');
