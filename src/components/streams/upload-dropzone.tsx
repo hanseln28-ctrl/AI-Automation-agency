@@ -169,6 +169,13 @@ export function UploadDropzone({
 
     const token = await getToken();
 
+    if (!token) {
+      setUploadState('error');
+      setErrorMessage('Authentication failed. Please sign out and sign in again.');
+      onUploadError?.('Authentication failed. Please sign out and sign in again.');
+      return;
+    }
+
     try {
       const title =
         uploadTitle?.trim() ||
