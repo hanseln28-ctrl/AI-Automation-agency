@@ -9,22 +9,83 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/shared/icon';
 import { ClipEditor } from '@/components/clips/clip-editor';
 import { ClipTabs } from '@/components/clips/clip-tabs';
-import { MOCK_CLIPS, getClipById } from '@/components/clips/mock-data';
+import { useClip } from '@/lib/hooks/use-clips';
+import { clipToMock } from '@/lib/adapters';
 import { CLIP_STATUS_CONFIG, MOMENT_CONFIG } from '@/components/clips/types';
 import type { MockClip } from '@/components/clips/types';
 
 type DetailTab = 'captions' | 'hashtags' | 'publishing' | 'analytics';
+
+// ── Loading Skeleton ──
+
+function ClipDetailSkeleton() {
+  return (
+    <div className="space-y-6 animate-pulse">
+      <div className="h-8 w-48 rounded bg-background-elevated" />
+      <div className="flex gap-3">
+        <div className="h-6 w-20 rounded-full bg-background-elevated" />
+        <div className="h-6 w-16 rounded bg-background-elevated" />
+        <div className="h-6 w-24 rounded bg-background-elevated" />
+      </div>
+      <div className="rounded-xl border border-border-subtle bg-background-card p-6 h-64">
+        <div className="h-5 w-1/2 rounded bg-background-elevated mb-4" />
+        <div className="h-4 w-full rounded bg-background-elevated mb-2" />
+        <div className="h-4 w-3/4 rounded bg-background-elevated" />
+      </div>
+    </div>
+  );
+}
 
 export default function ClipDetailPage() {
   const params = useParams();
   const router = useRouter();
   const clipId = params.id as string;
 
-  const clip = getClipById(clipId);
-  const [activeTab, setActiveTab] = React.useState<DetailTab>('captions');
-  const [clipData, setClipData] = React.useState<MockClip | null>(clip || null);
+  const { data: apiClip, isLoading, error } = useClip(clipId);
 
-  if (!clip) {
+  // Adapt API data to component shape
+  const clip = React.useMemo(
+    () => (apiClip ? clipToMock(apiClip) : null),
+    [apiClip],
+  );
+
+  const [activeTab, setActiveTab] = React.useState<DetailTab>('captions');
+  const [clipData, setClipData] = React.useState<MockClip | null>(null);
+
+  // Sync clip data when it loads
+  React.useEffect(() => {
+    if (clip) setClipData(clip);
+  }, [clip]);
+
+  // ── Loading ──
+
+  if (isLoading) {
+    return <ClipDetailSkeleton />;
+  }
+
+  // ── Error ──
+
+  if (error) {
+    return (
+      <MotionDiv
+        className="flex flex-col items-center justify-center py-24"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <Icon name="video" size="xl" color="text-text-tertiary" />
+        <h2 className="mt-4 text-lg font-semibold text-text-primary">Failed to Load Clip</h2>
+        <p className="mt-1 text-sm text-text-secondary">{error.message}</p>
+        <Button className="mt-4" onClick={() => router.push('/clips')}>
+          <Icon name="arrow-left" size="sm" color="text-white" className="mr-2" />
+          Back to Clips
+        </Button>
+      </MotionDiv>
+    );
+  }
+
+  // ── Not Found ──
+
+  if (!clip || !clipData) {
     return (
       <MotionDiv
         className="flex flex-col items-center justify-center py-24"
@@ -42,8 +103,8 @@ export default function ClipDetailPage() {
     );
   }
 
-  const statusConfig = CLIP_STATUS_CONFIG[clip.status];
-  const momentConfig = MOMENT_CONFIG[clip.momentType];
+  const statusConfig = CLIP_STATUS_CONFIG[clipData.status];
+  const momentConfig = MOMENT_CONFIG[clipData.momentType];
 
   return (
     <MotionDiv
@@ -53,15 +114,15 @@ export default function ClipDetailPage() {
       transition={{ duration: 0.2 }}
     >
       <PageHeader
-        title={clip.title}
-        description={`From ${clip.sourceStreamName} • ${clip.momentTimestamp}`}
+        title={clipData.title}
+        description={`From ${clipData.sourceStreamName} • ${clipData.momentTimestamp}`}
         actions={
           <div className="flex items-center gap-2">
             <Button variant="outline" onClick={() => router.push('/clips')}>
               <Icon name="arrow-left" size="sm" className="mr-2" />
               Back
             </Button>
-            <Button variant="secondary" onClick={() => router.push(`/clips/${clip.id}/edit`)}>
+            <Button variant="secondary" onClick={() => router.push(`/clips/${clipData.id}/edit`)}>
               <Icon name="edit" size="sm" className="mr-2" />
               Edit
             </Button>
@@ -90,31 +151,31 @@ export default function ClipDetailPage() {
         <span className="text-text-tertiary">•</span>
 
         <span className="text-text-secondary">
-          Format: {clip.format === 'vertical' ? '9:16' : clip.format === 'horizontal' ? '16:9' : '1:1'}
+          Format: {clipData.format === 'vertical' ? '9:16' : clipData.format === 'horizontal' ? '16:9' : '1:1'}
         </span>
 
         <span className="text-text-tertiary">•</span>
 
         <span className="text-text-secondary">
-          Duration: {clip.duration}s
+          Duration: {clipData.duration}s
         </span>
 
-        {clip.views > 0 && (
+        {clipData.views > 0 && (
           <>
             <span className="text-text-tertiary">•</span>
             <span className="inline-flex items-center gap-1 text-text-secondary">
               <Icon name="eye" size="sm" />
-              {(clip.views / 1000).toFixed(1)}k views
+              {(clipData.views / 1000).toFixed(1)}k views
             </span>
           </>
         )}
 
-        {clip.engagement > 0 && (
+        {clipData.engagement > 0 && (
           <>
             <span className="text-text-tertiary">•</span>
             <span className="inline-flex items-center gap-1 text-text-secondary">
               <Icon name="heart" size="sm" />
-              {(clip.engagement / 1000).toFixed(1)}k engagement
+              {(clipData.engagement / 1000).toFixed(1)}k engagement
             </span>
           </>
         )}
@@ -122,7 +183,7 @@ export default function ClipDetailPage() {
 
       {/* Editor */}
       <ClipEditor
-        clip={clip}
+        clip={clipData}
         onSave={(updated) => setClipData(updated)}
       />
 
@@ -142,7 +203,7 @@ export default function ClipDetailPage() {
               <h3 className="text-sm font-semibold text-text-primary">AI-Generated Captions</h3>
               <div className="rounded-lg bg-background-surface p-4">
                 <p className="text-sm text-text-secondary leading-relaxed">
-                  {clip.caption || 'No caption generated yet. Save the clip to generate captions.'}
+                  {clipData.caption || 'No caption generated yet. Save the clip to generate captions.'}
                 </p>
               </div>
               <div className="flex gap-2">
@@ -162,7 +223,7 @@ export default function ClipDetailPage() {
             <div className="space-y-4">
               <h3 className="text-sm font-semibold text-text-primary">Suggested Hashtags</h3>
               <div className="flex flex-wrap gap-2">
-                {(clip.hashtags || ['#gaming', '#clips', '#highlight']).map((tag) => (
+                {(clipData.hashtags || ['#gaming', '#clips', '#highlight']).map((tag) => (
                   <span
                     key={tag}
                     className="inline-flex items-center rounded-full bg-accent-subtle border border-accent/20 px-3 py-1 text-xs font-medium text-accent"
@@ -189,8 +250,8 @@ export default function ClipDetailPage() {
               <h3 className="text-sm font-semibold text-text-primary">Publishing Status</h3>
               <div className="space-y-3">
                 {[
-                  { platform: 'TikTok', icon: 'music', connected: true, status: clip.status === 'published' ? 'Published' : 'Ready' },
-                  { platform: 'YouTube Shorts', icon: 'play-circle', connected: true, status: clip.status === 'published' ? 'Published' : 'Ready' },
+                  { platform: 'TikTok', icon: 'music', connected: true, status: clipData.status === 'published' ? 'Published' : 'Ready' },
+                  { platform: 'YouTube Shorts', icon: 'play-circle', connected: true, status: clipData.status === 'published' ? 'Published' : 'Ready' },
                   { platform: 'Instagram Reels', icon: 'camera', connected: false, status: 'Not connected' },
                   { platform: 'Twitter/X', icon: 'send', connected: true, status: 'Draft' },
                 ].map((p) => (
@@ -226,8 +287,8 @@ export default function ClipDetailPage() {
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {[
-                  { label: 'Views', value: clip.views > 0 ? `${(clip.views / 1000).toFixed(1)}k` : '—', icon: 'eye' },
-                  { label: 'Engagement', value: clip.engagement > 0 ? `${(clip.engagement / 1000).toFixed(1)}k` : '—', icon: 'heart' },
+                  { label: 'Views', value: clipData.views > 0 ? `${(clipData.views / 1000).toFixed(1)}k` : '—', icon: 'eye' },
+                  { label: 'Engagement', value: clipData.engagement > 0 ? `${(clipData.engagement / 1000).toFixed(1)}k` : '—', icon: 'heart' },
                   { label: 'Watch Time', value: '85%', icon: 'clock' },
                   { label: 'Shares', value: '1.2k', icon: 'share-2' },
                 ].map((stat) => (

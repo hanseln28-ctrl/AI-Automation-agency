@@ -9,7 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/shared/icon';
 import { ClipGrid } from '@/components/clips/clip-grid';
 import { ClipFilterBar } from '@/components/clips/clip-filter-bar';
-import { MOCK_CLIPS } from '@/components/clips/mock-data';
+import { useClips } from '@/lib/hooks/use-clips';
+import { clipToMock } from '@/lib/adapters';
 import type { ClipStatus } from '@/components/clips/types';
 
 const TABS: { label: string; filter: ClipStatus | 'all' }[] = [
@@ -22,27 +23,38 @@ const TABS: { label: string; filter: ClipStatus | 'all' }[] = [
 export default function ClipsPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = React.useState<ClipStatus | 'all'>('all');
-  const [isLoading] = React.useState(false);
   const [search, setSearch] = React.useState('');
   const [platformFilter, setPlatformFilter] = React.useState('all');
   const [statusFilter, setStatusFilter] = React.useState('all');
   const [momentTypeFilter, setMomentTypeFilter] = React.useState('all');
 
-  const filtered = MOCK_CLIPS.filter((clip) => {
-    // Tab filter
-    if (activeTab !== 'all' && clip.status !== activeTab) return false;
+  // Fetch all clips (filtering done client-side for tabs)
+  const { data: apiClips, isLoading, error } = useClips();
 
-    // Search filter
-    if (search && !clip.title.toLowerCase().includes(search.toLowerCase())) return false;
+  // Adapt API data to component shapes
+  const allClips = React.useMemo(
+    () => (apiClips ? apiClips.map(clipToMock) : []),
+    [apiClips],
+  );
 
-    // Status dropdown filter (overrides tab when set)
-    if (statusFilter !== 'all' && clip.status !== statusFilter) return false;
+  // Client-side filtering (mirrors the previous mock-data filtering)
+  const filtered = React.useMemo(() => {
+    return allClips.filter((clip) => {
+      // Tab filter
+      if (activeTab !== 'all' && clip.status !== activeTab) return false;
 
-    // Moment type filter
-    if (momentTypeFilter !== 'all' && clip.momentType !== momentTypeFilter) return false;
+      // Search filter
+      if (search && !clip.title.toLowerCase().includes(search.toLowerCase())) return false;
 
-    return true;
-  });
+      // Status dropdown filter (overrides tab when set)
+      if (statusFilter !== 'all' && clip.status !== statusFilter) return false;
+
+      // Moment type filter
+      if (momentTypeFilter !== 'all' && clip.momentType !== momentTypeFilter) return false;
+
+      return true;
+    });
+  }, [allClips, activeTab, search, statusFilter, momentTypeFilter]);
 
   return (
     <MotionDiv
@@ -97,6 +109,15 @@ export default function ClipsPage() {
         isLoading={isLoading}
         activeTab={activeTab}
       />
+
+      {/* Error */}
+      {error && !isLoading && (
+        <div className="text-center py-8">
+          <p className="text-sm text-danger">
+            Failed to load clips: {error.message}
+          </p>
+        </div>
+      )}
     </MotionDiv>
   );
 }
