@@ -76,6 +76,7 @@ export default function SignUpPage() {
             alertText: 'text-sm',
           },
         }}
+        routing="hash"
         signInUrl="/sign-in"
         forceRedirectUrl="/dashboard"
       />

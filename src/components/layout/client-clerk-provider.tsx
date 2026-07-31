@@ -27,6 +27,7 @@ export function ClientClerkProvider({ children }: { children: React.ReactNode })
   return (
     <ClerkProvider
       publishableKey={PUBLISHABLE_KEY}
+      routing="hash"
       signInUrl="/sign-in"
       signUpUrl="/sign-up"
       afterSignOutUrl="/"
