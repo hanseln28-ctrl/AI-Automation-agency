@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 // Accepts JSON body: { fileName: string, contentType: string, title?: string }
 
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { getAuthUserId } from '@/lib/auth/api-auth';
 import { db } from '@/lib/db/prisma';
 import { getPresignedUploadUrl, getPublicUrl } from '@/lib/storage/r2';
 
@@ -18,13 +18,7 @@ function generateKey(userId: string, filename: string): string {
 
 export async function POST(request: NextRequest) {
   // ── 1. Auth ──
-  let userId: string | null = null;
-  try {
-    const session = await auth();
-    userId = session.userId ?? null;
-  } catch (err) {
-    console.error('[Presigned API] Auth error:', err);
-  }
+  const userId = await getAuthUserId();
 
   if (!userId) {
     return NextResponse.json(
